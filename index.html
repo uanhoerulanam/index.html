@@ -87,6 +87,16 @@
                 );
         }
 
+        /* ====== CANVAS EFEK KLIK (di atas semua) ====== */
+        #fx-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
         .axm-card {
             background: linear-gradient(
                 135deg,
@@ -272,6 +282,9 @@
 
     <div id="bg-overlay"></div>
 
+    <!-- CANVAS EFEK KLIK/TOUCH -->
+    <canvas id="fx-canvas"></canvas>
+
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-[2]">
         <div class="blob-blue top-[-10%] left-[-10%] animate-pulse-glow"></div>
         <div class="blob-purple top-[30%] right-[-10%] animate-pulse-glow" style="animation-delay: 1.5s;"></div>
@@ -314,7 +327,7 @@
             </div>
 
             <h1 class="profile-title font-heading text-2xl md:text-3xl font-black tracking-wider text-axm-gradient mb-2 uppercase">
-                ANKRAI X MOTION
+                ANKRAIX MOTION
             </h1>
 
             <p class="text-slate-400 font-medium text-sm tracking-wide mb-4">
@@ -686,7 +699,7 @@
             setIconPlaying(false);
         })();
 
-        // EFEK PERCIKAN API
+        // EFEK PERCIKAN API DI SEKITAR LOGO
         (function () {
             const canvas = document.getElementById('spark-canvas');
             if (!canvas) return;
@@ -809,6 +822,274 @@
                 }
 
                 particles = nextParticles;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            requestAnimationFrame(animate);
+        })();
+
+        /* ============================================================
+           EFEK KLIK/TOUCH:
+           - Ledakan percikan (sparks) ke segala arah
+           - Garis retakan ala anime pecah kaca
+           - Ring gelombang kejut
+           ============================================================ */
+        (function () {
+            const canvas = document.getElementById('fx-canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d', { alpha: true });
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            const isMobile = window.matchMedia('(max-width: 768px)').matches
+                          || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+            let W = 0, H = 0;
+
+            // Kumpulan efek
+            let bursts = [];   // percikan
+            let cracks = [];   // retakan kaca
+            let rings = [];    // gelombang kejut
+
+            function resize() {
+                W = window.innerWidth;
+                H = window.innerHeight;
+                canvas.width = Math.floor(W * dpr);
+                canvas.height = Math.floor(H * dpr);
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+
+            resize();
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resize, 150);
+            });
+
+            // Warna spark: ungu, biru, cyan, putih, emas
+            const SPARK_COLORS = [
+                { r: 217, g: 0,   b: 255 },  // ungu
+                { r: 150, g: 0,   b: 255 },  // ungu tua
+                { r: 0,   g: 210, b: 255 },  // biru cyan
+                { r: 60,  g: 120, b: 255 },  // biru elektrik
+                { r: 255, g: 255, b: 255 },  // putih
+                { r: 255, g: 200, b: 60  }   // emas
+            ];
+
+            // Bikin spark ledakan dari titik (x, y)
+            function createBurst(x, y) {
+                const count = isMobile ? 22 : 38;
+                for (let i = 0; i < count; i++) {
+                    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
+                    const speed = 2 + Math.random() * 6;
+                    const color = SPARK_COLORS[(Math.random() * SPARK_COLORS.length) | 0];
+
+                    bursts.push({
+                        x: x,
+                        y: y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        life: 1,
+                        decay: 0.018 + Math.random() * 0.020,
+                        size: 1.5 + Math.random() * 2.8,
+                        color: color,
+                        gravity: 0.12
+                    });
+                }
+            }
+
+            // Bikin retakan kaca (crack) dari titik (x, y)
+            function createCrack(x, y) {
+                const numLines = isMobile ? 7 : 10;
+                const lines = [];
+
+                for (let i = 0; i < numLines; i++) {
+                    const baseAngle = (Math.PI * 2 * i) / numLines + (Math.random() - 0.5) * 0.4;
+                    const segments = [];
+                    const segCount = 3 + (Math.random() * 3 | 0);
+                    const totalLength = 40 + Math.random() * 90;
+                    let curX = 0, curY = 0;
+
+                    // Bikin jalur zig-zag (retakan)
+                    for (let s = 0; s < segCount; s++) {
+                        const segLen = totalLength / segCount;
+                        const angleJitter = (Math.random() - 0.5) * 0.9;
+                        const a = baseAngle + angleJitter;
+                        curX += Math.cos(a) * segLen;
+                        curY += Math.sin(a) * segLen;
+                        segments.push({ x: curX, y: curY });
+                    }
+
+                    lines.push({
+                        segments: segments,
+                        width: 1 + Math.random() * 1.8
+                    });
+                }
+
+                cracks.push({
+                    x: x,
+                    y: y,
+                    lines: lines,
+                    life: 1,
+                    decay: 0.025,
+                    scale: 0.4,
+                    scaleSpeed: 0.55
+                });
+            }
+
+            // Bikin gelombang kejut
+            function createRing(x, y) {
+                rings.push({
+                    x: x,
+                    y: y,
+                    life: 1,
+                    decay: 0.05,
+                    radius: 5,
+                    maxRadius: 60 + Math.random() * 30,
+                    color: SPARK_COLORS[(Math.random() * 4) | 0]
+                });
+            }
+
+            // Trigger semua efek di posisi tertentu
+            function triggerEffects(x, y) {
+                createBurst(x, y);
+                createCrack(x, y);
+                createRing(x, y);
+            }
+
+            // Event listener global: klik & tap
+            document.addEventListener('click', function (e) {
+                // Skip kalau klik di area interaktif? Nggak, biar semua kena
+                triggerEffects(e.clientX, e.clientY);
+            }, { passive: true });
+
+            document.addEventListener('touchstart', function (e) {
+                for (let i = 0; i < e.touches.length; i++) {
+                    const t = e.touches[i];
+                    triggerEffects(t.clientX, t.clientY);
+                }
+            }, { passive: true });
+
+            // Animasi
+            function animate() {
+                requestAnimationFrame(animate);
+
+                ctx.clearRect(0, 0, W, H);
+                ctx.globalCompositeOperation = 'lighter';
+
+                // ==== Update & gambar BURST ====
+                const nextBursts = [];
+                for (let i = 0; i < bursts.length; i++) {
+                    const p = bursts[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += p.gravity;   // ada gravitasi
+                    p.vx *= 0.97;
+                    p.vy *= 0.97;
+                    p.life -= p.decay;
+
+                    if (p.life <= 0) continue;
+
+                    const alpha = p.life;
+                    const size = p.size * (0.5 + p.life * 0.6);
+                    const { r, g, b } = p.color;
+
+                    // Glow luar
+                    ctx.fillStyle = `rgba(${r},${g},${b},${alpha * 0.35})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, size * 3, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Inti
+                    ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, size * 1.3, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Highlight
+                    ctx.fillStyle = `rgba(255,255,255,${alpha * 0.65})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, Math.max(size * 0.5, 0.5), 0, Math.PI * 2);
+                    ctx.fill();
+
+                    nextBursts.push(p);
+                }
+                bursts = nextBursts;
+
+                // ==== Update & gambar CRACK (retakan kaca) ====
+                const nextCracks = [];
+                for (let i = 0; i < cracks.length; i++) {
+                    const c = cracks[i];
+                    c.life -= c.decay;
+                    c.scale += c.scaleSpeed * (1 - c.life);
+
+                    if (c.life <= 0) continue;
+
+                    const alpha = c.life;
+                    ctx.save();
+                    ctx.translate(c.x, c.y);
+                    ctx.scale(c.scale, c.scale);
+
+                    for (let j = 0; j < c.lines.length; j++) {
+                        const line = c.lines[j];
+
+                        // Glow luar (biru/ungu)
+                        ctx.strokeStyle = `rgba(0, 210, 255, ${alpha * 0.55})`;
+                        ctx.lineWidth = line.width * 3;
+                        ctx.lineCap = 'round';
+                        ctx.lineJoin = 'round';
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        for (let k = 0; k < line.segments.length; k++) {
+                            ctx.lineTo(line.segments[k].x, line.segments[k].y);
+                        }
+                        ctx.stroke();
+
+                        // Inti putih terang
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                        ctx.lineWidth = line.width;
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        for (let k = 0; k < line.segments.length; k++) {
+                            ctx.lineTo(line.segments[k].x, line.segments[k].y);
+                        }
+                        ctx.stroke();
+                    }
+
+                    // Titik pusat retakan (flash kecil)
+                    const flashSize = 4 * (1 - c.life) + 2;
+                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, flashSize, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.restore();
+                    nextCracks.push(c);
+                }
+                cracks = nextCracks;
+
+                // ==== Update & gambar RING (gelombang kejut) ====
+                const nextRings = [];
+                for (let i = 0; i < rings.length; i++) {
+                    const r = rings[i];
+                    r.life -= r.decay;
+                    r.radius += (r.maxRadius - r.radius) * 0.18;
+
+                    if (r.life <= 0) continue;
+
+                    const alpha = r.life;
+                    const { r: rr, g, b } = r.color;
+
+                    ctx.strokeStyle = `rgba(${rr},${g},${b},${alpha * 0.7})`;
+                    ctx.lineWidth = 2 + (1 - r.life) * 2;
+                    ctx.beginPath();
+                    ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    nextRings.push(r);
+                }
+                rings = nextRings;
+
                 ctx.globalCompositeOperation = 'source-over';
             }
 
