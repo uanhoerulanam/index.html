@@ -36,14 +36,8 @@
                     },
                     keyframes: {
                         pulseGlow: {
-                            '0%': {
-                                opacity: '0.4',
-                                transform: 'scale(1)'
-                            },
-                            '100%': {
-                                opacity: '0.7',
-                                transform: 'scale(1.08)'
-                            }
+                            '0%': { opacity: '0.4', transform: 'scale(1)' },
+                            '100%': { opacity: '0.7', transform: 'scale(1.08)' }
                         }
                     }
                 }
@@ -59,6 +53,7 @@
         html, body {
             margin: 0;
             padding: 0;
+            height: 100%;
         }
 
         body {
@@ -66,20 +61,31 @@
             background-color: #080a11;
         }
 
-        /* ====== VIDEO BACKGROUND ====== */
+        /* ====== VIDEO BACKGROUND (OPTIMIZED) ====== */
         #bg-video {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+
+            /* Cover = penuh layar, crop proporsional */
             object-fit: cover;
             object-position: center;
+
             z-index: 0;
             pointer-events: none;
+
+            /* GPU ACCELERATION -> supaya video lebih mulus */
+            transform: translate3d(0, 0, 0);
+            -webkit-transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            will-change: transform;
+            -webkit-perspective: 1000;
+            perspective: 1000;
         }
 
-        /* Overlay gelap supaya teks tetap kebaca */
+        /* Overlay gelap supaya teks kebaca */
         #bg-overlay {
             position: fixed;
             inset: 0;
@@ -88,8 +94,8 @@
             background:
                 radial-gradient(
                     circle at 50% 40%,
-                    rgba(8, 10, 17, 0.35) 0%,
-                    rgba(8, 10, 17, 0.75) 60%,
+                    rgba(8, 10, 17, 0.30) 0%,
+                    rgba(8, 10, 17, 0.72) 60%,
                     rgba(8, 10, 17, 0.92) 100%
                 );
         }
@@ -105,7 +111,6 @@
             -webkit-backdrop-filter: blur(16px);
 
             border: 1px solid rgba(255, 255, 255, 0.08);
-
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
 
             transition:
@@ -142,11 +147,9 @@
 
         .axm-card:hover {
             border-color: rgba(0, 210, 255, 0.35);
-
             box-shadow:
                 0 0 22px rgba(0, 210, 255, 0.12),
                 0 0 22px rgba(217, 0, 255, 0.10);
-
             transform: translateY(-2px);
         }
 
@@ -202,7 +205,7 @@
             animation: pulseGlow 3s ease-in-out infinite alternate;
         }
 
-        /* CANVAS PARTIKEL PERCIKAN API */
+        /* CANVAS PARTIKEL */
         .spark-canvas {
             position: absolute;
             inset: -75px;
@@ -224,11 +227,9 @@
             object-fit: cover;
             object-position: center;
 
-            /* Memperbesar gambar agar bagian hitam di tepi berkurang */
             transform: scale(1.12);
 
             background: transparent;
-
             border: none;
             outline: none;
 
@@ -282,47 +283,22 @@
             border-color: rgba(255, 255, 255, 0.20);
         }
 
-        #toast {
-            transition: all 0.35s ease;
-        }
+        #toast { transition: all 0.35s ease; }
+        #toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+        #toast.hide { opacity: 0; transform: translate(-50%, 20px) scale(0.95); }
 
-        #toast.show {
-            opacity: 1;
-            transform: translate(-50%, 0) scale(1);
-        }
+        #qr-modal { transition: opacity 0.3s ease; }
+        #modal-content { transition: transform 0.3s ease; }
 
-        #toast.hide {
-            opacity: 0;
-            transform: translate(-50%, 20px) scale(0.95);
-        }
-
-        #qr-modal {
-            transition: opacity 0.3s ease;
-        }
-
-        #modal-content {
-            transition: transform 0.3s ease;
-        }
-
-        .social-button {
-            min-height: 48px;
-        }
+        .social-button { min-height: 48px; }
 
         @media (max-width: 380px) {
-            .avatar-glow {
-                width: 128px;
-                height: 128px;
-            }
-
-            .profile-title {
-                font-size: 21px;
-            }
+            .avatar-glow { width: 128px; height: 128px; }
+            .profile-title { font-size: 21px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
+            *, *::before, *::after {
                 animation-duration: 0.01ms !important;
                 transition-duration: 0.01ms !important;
             }
@@ -339,25 +315,24 @@
         muted
         loop
         playsinline
+        webkit-playsinline
+        disablepictureinpicture
         preload="auto"
         poster="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/ToastAndroForever.png">
 
-        <!-- jsDelivr CDN (lebih cepat & stabil) -->
         <source
             src="https://cdn.jsdelivr.net/gh/uanhoerulanam/index.html@main/Dark%20Blue%20Fire.mp4"
             type="video/mp4">
 
-        <!-- Fallback raw GitHub -->
         <source
             src="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/Dark%20Blue%20Fire.mp4"
             type="video/mp4">
-
     </video>
 
-    <!-- OVERLAY GELAP BIAR TEKS KEBACA -->
+    <!-- OVERLAY GELAP -->
     <div id="bg-overlay"></div>
 
-    <!-- BACKGROUND GLOW (di atas overlay video) -->
+    <!-- BACKGROUND GLOW -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-[2]">
         <div class="blob-blue top-[-10%] left-[-10%] animate-pulse-glow"></div>
 
@@ -380,7 +355,6 @@
 
             <div class="flex items-center space-x-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
-
                 <span class="font-heading text-xs uppercase tracking-widest text-cyan-300 font-semibold">
                     aXM Official
                 </span>
@@ -394,7 +368,6 @@
                     class="glass-btn p-3 rounded-xl text-slate-300 hover:text-white"
                     title="QR Code Profil"
                     aria-label="Buka QR Code">
-
                     <i class="fa-solid fa-qrcode text-base"></i>
                 </button>
 
@@ -404,7 +377,6 @@
                     class="glass-btn p-3 rounded-xl text-slate-300 hover:text-white"
                     title="Bagikan Profil"
                     aria-label="Bagikan profil">
-
                     <i class="fa-solid fa-share-nodes text-base"></i>
                 </button>
 
@@ -414,10 +386,7 @@
         <!-- PROFILE -->
         <section class="text-center w-full mb-10 flex flex-col items-center">
 
-            <!-- LOGO AXM + EFEK PERCIKAN API -->
             <div class="avatar-glow mb-7">
-
-                <!-- Canvas partikel api ungu & biru -->
                 <canvas id="spark-canvas" class="spark-canvas"></canvas>
 
                 <img
@@ -425,31 +394,22 @@
                     src="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/ToastAndroForever.png"
                     alt="Logo Ankraix Motion aXM"
                     class="avatar-image"
-                    onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/uanhoerulanam/gambar-ankraixmotion-/main/as.png';"
-                >
-
+                    onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/uanhoerulanam/gambar-ankraixmotion-/main/as.png';">
             </div>
 
-            <!-- NAMA WEBSITE -->
             <h1 class="profile-title font-heading text-2xl md:text-3xl font-black tracking-wider text-axm-gradient mb-2 uppercase">
                 ANKRAIX MOTION
             </h1>
 
-            <!-- USERNAME -->
             <p class="text-slate-400 font-medium text-sm tracking-wide mb-4">
                 @ankraixmotion
             </p>
 
-            <!-- BADGE -->
             <div class="inline-flex items-center px-3 py-2 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700/60 text-cyan-300 gap-2 mb-4 shadow-inner">
-
                 <i class="fa-solid fa-wand-magic-sparkles text-axmPurple"></i>
-
                 <span>share mod &amp; jual akun prem</span>
-
             </div>
 
-            <!-- DESKRIPSI -->
             <p class="text-slate-300 text-sm max-w-sm leading-relaxed">
                 Wajib join saluran WhatsApp dan channel Telegram, serta follow dan subscribe akun kami, untuk mendapatkan informasi terbaru. Semua aplikasi mod yang saya bagikan 100% gratis.
             </p>
@@ -461,173 +421,133 @@
 
             <!-- 1. WHATSAPP -->
             <div class="axm-card rounded-2xl p-4">
-
                 <div class="flex items-center space-x-3.5 mb-4">
-
                     <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl flex-shrink-0">
                         <i class="fa-brands fa-whatsapp"></i>
                     </div>
-
                     <div>
                         <h2 class="text-sm md:text-base font-bold text-white leading-tight">
                             Saluran WhatsApp
                         </h2>
                     </div>
-
                 </div>
 
                 <div class="grid grid-cols-5 gap-2">
-
                     <a
                         href="https://whatsapp.com/channel/0029VbC1J5S8kyyMKhJ1Na2w"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="social-button col-span-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold px-2 rounded-xl text-xs md:text-sm flex items-center justify-center gap-2 transition shadow-md shadow-emerald-950/50">
-
                         <span>Join Saluran</span>
                         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-
                     </a>
 
                     <button
                         type="button"
                         onclick="copyToClipboard('https://whatsapp.com/channel/0029VbC1J5S8kyyMKhJ1Na2w', 'Saluran WhatsApp')"
                         class="social-button col-span-2 glass-btn text-slate-200 hover:text-white font-medium px-2 rounded-xl text-xs md:text-sm flex items-center justify-center gap-1.5">
-
                         <i class="fa-regular fa-copy"></i>
                         <span>Salin Link</span>
-
                     </button>
-
                 </div>
             </div>
 
             <!-- 2. TELEGRAM -->
             <div class="axm-card rounded-2xl p-4">
-
                 <div class="flex items-center space-x-3.5 mb-4">
-
                     <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 text-2xl flex-shrink-0">
                         <i class="fa-brands fa-telegram"></i>
                     </div>
-
                     <div>
                         <h2 class="text-sm md:text-base font-bold text-white leading-tight">
                             Channel Telegram
                         </h2>
                     </div>
-
                 </div>
 
                 <div class="grid grid-cols-5 gap-2">
-
                     <a
                         href="https://t.me/ankraixmotion"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="social-button col-span-3 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-semibold px-2 rounded-xl text-xs md:text-sm flex items-center justify-center gap-2 transition shadow-md shadow-sky-950/50">
-
                         <span>Join Channel</span>
                         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-
                     </a>
 
                     <button
                         type="button"
                         onclick="copyToClipboard('https://t.me/ankraixmotion', 'Channel Telegram')"
                         class="social-button col-span-2 glass-btn text-slate-200 hover:text-white font-medium px-2 rounded-xl text-xs md:text-sm flex items-center justify-center gap-1.5">
-
                         <i class="fa-regular fa-copy"></i>
                         <span>Salin Link</span>
-
                     </button>
-
                 </div>
             </div>
 
             <!-- 3. TIKTOK -->
             <div class="axm-card rounded-2xl p-4">
-
                 <div class="flex items-center space-x-3.5 mb-4">
-
                     <div class="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 text-2xl flex-shrink-0">
                         <i class="fa-brands fa-tiktok"></i>
                     </div>
-
                     <div>
                         <h2 class="text-sm md:text-base font-bold text-white leading-tight">
                             Akun TikTok
                         </h2>
                     </div>
-
                 </div>
 
                 <div class="grid grid-cols-5 gap-2">
-
                     <a
                         href="https://www.tiktok.com/@ankraixmotion?_r=1&_t=ZS-9AbSpsPQ2Po"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="social-button col-span-3 bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 text-white font-semibold px-2 rounded-xl text-xs md:text-sm flex items-center justify-center gap-2 transition shadow-md shadow-pink-950/50">
-
                         <span>Follow TikTok</span>
                         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-
                     </a>
 
                     <button
                         type="button"
                         onclick="copyToClipboard('https://www.tiktok.com/@ankraixmotion?_r=1&_t=ZS-9AbSpsPQ2Po', 'TikTok')"
                         class="social-button col-span-2 glass-btn text-slate-200 hover:text-white font-medium px-2 rounded-xl text-xs md:text-sm flex items-center justify-center gap-1.5">
-
                         <i class="fa-regular fa-copy"></i>
                         <span>Salin Link</span>
-
                     </button>
-
                 </div>
             </div>
 
             <!-- 4. YOUTUBE -->
             <div class="axm-card rounded-2xl p-4">
-
                 <div class="flex items-center space-x-3.5 mb-4">
-
                     <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 text-2xl flex-shrink-0">
                         <i class="fa-brands fa-youtube"></i>
                     </div>
-
                     <div>
                         <h2 class="text-sm md:text-base font-bold text-white leading-tight">
                             Channel YouTube
                         </h2>
                     </div>
-
                 </div>
 
                 <div class="grid grid-cols-5 gap-2">
-
                     <a
                         href="https://youtube.com/@kilua_projek?si=offtR0SwO0OvJwVs"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="social-button col-span-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold px-2 rounded-xl text-xs md:text-sm flex items-center justify-center gap-2 transition shadow-md shadow-red-950/50">
-
                         <span>Subscribe</span>
                         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-
                     </a>
 
                     <button
                         type="button"
                         onclick="copyToClipboard('https://youtube.com/@kilua_projek?si=offtR0SwO0OvJwVs', 'Channel YouTube')"
                         class="social-button col-span-2 glass-btn text-slate-200 hover:text-white font-medium px-2 rounded-xl text-xs md:text-sm flex items-center justify-center gap-1.5">
-
                         <i class="fa-regular fa-copy"></i>
                         <span>Salin Link</span>
-
                     </button>
-
                 </div>
             </div>
 
@@ -635,40 +555,32 @@
 
         <!-- FOOTER -->
         <footer class="mt-12 text-center text-xs text-slate-500 space-y-2">
-
             <p class="font-heading text-slate-400">
                 ANKRAIX MOTION &copy; <span id="year"></span>
             </p>
-
             <p class="text-[11px] text-slate-600">
                 Official Links
             </p>
-
         </footer>
 
     </main>
 
-    <!-- NOTIFIKASI SALIN LINK -->
+    <!-- NOTIFIKASI -->
     <div
         id="toast"
         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hide pointer-events-none w-11/12 max-w-sm">
-
         <div class="bg-slate-900/95 border border-cyan-500/50 text-white px-4 py-3 rounded-2xl shadow-2xl backdrop-blur-xl flex items-center space-x-3">
-
             <div class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0">
                 <i class="fa-solid fa-check text-sm"></i>
             </div>
-
             <div class="flex-grow">
                 <p id="toast-title" class="text-xs font-bold text-cyan-400 uppercase tracking-wider">
                     Berhasil Disalin!
                 </p>
-
                 <p id="toast-message" class="text-xs text-slate-300">
                     Tautan siap dibagikan.
                 </p>
             </div>
-
         </div>
     </div>
 
@@ -676,165 +588,106 @@
     <div
         id="qr-modal"
         class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none">
-
         <div
             id="modal-content"
             class="axm-card rounded-3xl p-6 w-full max-w-xs text-center flex flex-col items-center relative border border-slate-700/60 scale-95">
-
             <button
                 type="button"
                 onclick="closeQrModal()"
                 class="absolute top-3 right-3 text-slate-400 hover:text-white p-2"
                 aria-label="Tutup QR Code">
-
                 <i class="fa-solid fa-xmark text-lg"></i>
-
             </button>
-
             <h3 class="font-heading text-base font-bold text-white mb-2">
                 QR CODE PROFIL
             </h3>
-
             <p class="text-xs text-slate-400 mb-4">
                 Pindai QR untuk membuka website ini.
             </p>
-
             <div
                 class="bg-white p-3.5 rounded-2xl shadow-inner mb-4 flex items-center justify-center min-w-[194px] min-h-[194px]"
                 id="qrcode">
             </div>
-
             <p class="text-xs font-heading text-axm-gradient">
                 Ankraix Motion
             </p>
-
         </div>
     </div>
 
     <!-- JAVASCRIPT -->
     <script>
-        // Tahun otomatis
-        document.getElementById('year').textContent =
-            new Date().getFullYear();
+        document.getElementById('year').textContent = new Date().getFullYear();
 
-        // Notifikasi
         let toastTimeout;
-
         function showToast(title, message) {
             const toast = document.getElementById('toast');
-
             document.getElementById('toast-title').textContent = title;
             document.getElementById('toast-message').textContent = message;
-
             toast.classList.remove('hide');
             toast.classList.add('show');
-
             clearTimeout(toastTimeout);
-
             toastTimeout = setTimeout(() => {
                 toast.classList.remove('show');
                 toast.classList.add('hide');
             }, 2500);
         }
 
-        // Salin tautan
         function copyToClipboard(textToCopy, platformName) {
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(textToCopy)
-                    .then(() => {
-                        showToast(
-                            'Berhasil Disalin!',
-                            'Link ' + platformName + ' siap dibagikan.'
-                        );
-                    })
-                    .catch(() => {
-                        fallbackCopyTextToClipboard(
-                            textToCopy,
-                            platformName
-                        );
-                    });
+                    .then(() => showToast('Berhasil Disalin!', 'Link ' + platformName + ' siap dibagikan.'))
+                    .catch(() => fallbackCopyTextToClipboard(textToCopy, platformName));
             } else {
-                fallbackCopyTextToClipboard(
-                    textToCopy,
-                    platformName
-                );
+                fallbackCopyTextToClipboard(textToCopy, platformName);
             }
         }
 
         function fallbackCopyTextToClipboard(text, platformName) {
             const textArea = document.createElement('textarea');
-
             textArea.value = text;
             textArea.style.position = 'fixed';
             textArea.style.left = '-9999px';
             textArea.style.top = '0';
-
             document.body.appendChild(textArea);
-
             textArea.focus();
             textArea.select();
-
             try {
                 const successful = document.execCommand('copy');
-
                 if (successful) {
-                    showToast(
-                        'Berhasil Disalin!',
-                        'Link ' + platformName + ' siap dibagikan.'
-                    );
+                    showToast('Berhasil Disalin!', 'Link ' + platformName + ' siap dibagikan.');
                 } else {
-                    showToast(
-                        'Gagal Menyalin',
-                        'Silakan salin tautan secara manual.'
-                    );
+                    showToast('Gagal Menyalin', 'Silakan salin tautan secara manual.');
                 }
             } catch (error) {
-                showToast(
-                    'Gagal Menyalin',
-                    'Silakan salin tautan secara manual.'
-                );
+                showToast('Gagal Menyalin', 'Silakan salin tautan secara manual.');
             }
-
             document.body.removeChild(textArea);
         }
 
-        // Bagikan website
         function shareProfile() {
             const shareData = {
                 title: 'Ankraix Motion - Official Links',
                 text: 'Temukan tautan resmi Ankraix Motion.',
                 url: window.location.href
             };
-
             if (navigator.share) {
                 navigator.share(shareData).catch(() => {});
             } else {
-                copyToClipboard(
-                    window.location.href,
-                    'Website Profil'
-                );
+                copyToClipboard(window.location.href, 'Website Profil');
             }
         }
 
-        // QR Code
         let qrGenerated = false;
-
         function openQrModal() {
             const modal = document.getElementById('qr-modal');
             const modalContent = document.getElementById('modal-content');
             const qrContainer = document.getElementById('qrcode');
-
             if (typeof QRCode === 'undefined') {
-                showToast(
-                    'QR Code Tidak Tersedia',
-                    'Periksa koneksi internet lalu coba lagi.'
-                );
+                showToast('QR Code Tidak Tersedia', 'Periksa koneksi internet lalu coba lagi.');
                 return;
             }
-
             if (!qrGenerated) {
                 qrContainer.innerHTML = '';
-
                 new QRCode(qrContainer, {
                     text: window.location.href,
                     width: 170,
@@ -843,15 +696,9 @@
                     colorLight: '#ffffff',
                     correctLevel: QRCode.CorrectLevel.H
                 });
-
                 qrGenerated = true;
             }
-
-            modal.classList.remove(
-                'opacity-0',
-                'pointer-events-none'
-            );
-
+            modal.classList.remove('opacity-0', 'pointer-events-none');
             modalContent.classList.remove('scale-95');
             modalContent.classList.add('scale-100');
         }
@@ -859,102 +706,96 @@
         function closeQrModal() {
             const modal = document.getElementById('qr-modal');
             const modalContent = document.getElementById('modal-content');
-
-            modal.classList.add(
-                'opacity-0',
-                'pointer-events-none'
-            );
-
+            modal.classList.add('opacity-0', 'pointer-events-none');
             modalContent.classList.remove('scale-100');
             modalContent.classList.add('scale-95');
         }
 
-        // Tutup modal saat area luar ditekan
-        document.getElementById('qr-modal').addEventListener(
-            'click',
-            function(event) {
-                if (event.target === this) {
-                    closeQrModal();
-                }
-            }
-        );
+        document.getElementById('qr-modal').addEventListener('click', function(event) {
+            if (event.target === this) closeQrModal();
+        });
 
-        // Tutup modal dengan tombol Escape
         document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeQrModal();
-            }
+            if (event.key === 'Escape') closeQrModal();
         });
 
         /* ============================================================
-           PASTIKAN VIDEO AUTOPLAY DI MOBILE (iOS / Android)
+           VIDEO AUTOPLAY + PAUSE KETIKA TAB HIDDEN (HEMAT BATERAI)
            ============================================================ */
         (function () {
             const video = document.getElementById('bg-video');
             if (!video) return;
 
-            // Beberapa browser butuh di-force play setelah interaksi pertama
             function tryPlay() {
                 const p = video.play();
-                if (p && typeof p.catch === 'function') {
-                    p.catch(() => {});
-                }
+                if (p && typeof p.catch === 'function') p.catch(() => {});
             }
 
             tryPlay();
             document.addEventListener('touchstart', tryPlay, { once: true });
             document.addEventListener('click', tryPlay, { once: true });
 
-            // Kalau tab kembali aktif, lanjut play
             document.addEventListener('visibilitychange', () => {
-                if (!document.hidden) tryPlay();
+                if (document.hidden) {
+                    video.pause();
+                } else {
+                    tryPlay();
+                }
             });
         })();
 
         /* ============================================================
-           EFEK PERCIKAN API UNGU & BIRU DI SEKELILING LOGO
+           EFEK PERCIKAN API — ADAPTIF BERDASARKAN DEVICE
+           - HP kecil: partikel sedikit + FPS rendah
+           - Desktop: partikel banyak + FPS tinggi
            ============================================================ */
         (function () {
             const canvas = document.getElementById('spark-canvas');
             if (!canvas) return;
 
-            const ctx = canvas.getContext('2d');
-            const dpr = window.devicePixelRatio || 1;
+            const ctx = canvas.getContext('2d', { alpha: true });
+            const dpr = Math.min(window.devicePixelRatio || 1, 2); // Batasi DPR max 2
 
-            let W = 0;
-            let H = 0;
+            // ==== DETEKSI DEVICE ====
+            const isMobile = window.matchMedia('(max-width: 768px)').matches
+                          || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+            // Partikel & FPS adaptif
+            const MAX_PARTICLES = isMobile ? 70 : 160;
+            const TARGET_FPS    = isMobile ? 30 : 60;
+            const FRAME_INTERVAL = 1000 / TARGET_FPS;
+
+            let W = 0, H = 0;
             let particles = [];
-            const MAX_PARTICLES = 220;
 
-            // Palet warna api: ungu & biru
             const COLORS = [
-                { r: 217, g: 0,   b: 255 }, // ungu terang
-                { r: 150, g: 0,   b: 255 }, // ungu keunguan
-                { r: 0,   g: 210, b: 255 }, // biru cyan
-                { r: 60,  g: 120, b: 255 }  // biru elektrik
+                { r: 217, g: 0,   b: 255 },
+                { r: 150, g: 0,   b: 255 },
+                { r: 0,   g: 210, b: 255 },
+                { r: 60,  g: 120, b: 255 }
             ];
 
             function resize() {
                 const rect = canvas.getBoundingClientRect();
                 W = rect.width;
                 H = rect.height;
-
                 canvas.width = Math.floor(W * dpr);
                 canvas.height = Math.floor(H * dpr);
-
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             }
 
             resize();
-            window.addEventListener('resize', resize);
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resize, 150);
+            });
 
-            // Radius logo di dalam koordinat canvas
             function getLogoRadius() {
                 const logoEl = document.querySelector('.avatar-glow');
                 if (!logoEl) return W * 0.25;
-
                 const logoSize = logoEl.getBoundingClientRect().width;
-                const totalSize = logoSize + 150; // sama dengan inset CSS (-75px x2)
+                const totalSize = logoSize + 150;
                 return (logoSize / 2) * (W / totalSize);
             }
 
@@ -964,29 +805,17 @@
                 const cx = W / 2;
                 const cy = H / 2;
                 const radius = getLogoRadius();
-
-                // Emit dari sekeliling lingkaran logo
                 const angle = Math.random() * Math.PI * 2;
-
-                // Sedikit variasi radius agar tidak terlalu rapi
                 const rOffset = (Math.random() - 0.5) * 10;
-                const startX = cx + Math.cos(angle) * (radius + rOffset);
-                const startY = cy + Math.sin(angle) * (radius + rOffset);
 
                 const color = COLORS[(Math.random() * COLORS.length) | 0];
-
-                // Kecepatan: mengarah keluar dari lingkaran + sedikit ke atas
                 const speed = 0.3 + Math.random() * 1.2;
-                const vx = Math.cos(angle) * speed * 0.4 +
-                           (Math.random() - 0.5) * 0.4;
-                const vy = Math.sin(angle) * speed * 0.4 -
-                           (0.4 + Math.random() * 0.9); // bias ke atas
 
                 particles.push({
-                    x: startX,
-                    y: startY,
-                    vx: vx,
-                    vy: vy,
+                    x: cx + Math.cos(angle) * (radius + rOffset),
+                    y: cy + Math.sin(angle) * (radius + rOffset),
+                    vx: Math.cos(angle) * speed * 0.4 + (Math.random() - 0.5) * 0.4,
+                    vy: Math.sin(angle) * speed * 0.4 - (0.4 + Math.random() * 0.9),
                     life: 1,
                     decay: 0.008 + Math.random() * 0.014,
                     size: 1 + Math.random() * 2.2,
@@ -994,35 +823,33 @@
                 });
             }
 
-            let lastTime = 0;
+            let lastFrameTime = 0;
+            let animTime = 0;
 
             function animate(time) {
-                // Batasi frame ke ~60 FPS feel
-                if (!lastTime) lastTime = time;
-                const delta = Math.min(time - lastTime, 33);
-                lastTime = time;
+                requestAnimationFrame(animate);
+
+                // FRAME LIMITER (30/60 FPS)
+                const elapsed = time - lastFrameTime;
+                if (elapsed < FRAME_INTERVAL) return;
+                lastFrameTime = time - (elapsed % FRAME_INTERVAL);
 
                 ctx.clearRect(0, 0, W, H);
-
-                // Additive blending → glow effect
                 ctx.globalCompositeOperation = 'lighter';
 
-                // Spawn beberapa partikel per frame
-                const spawnCount = Math.round(2 + delta / 16);
-                for (let i = 0; i < spawnCount; i++) {
-                    spawnParticle();
-                }
+                // Spawn partikel (lebih sedikit di HP)
+                const spawnCount = isMobile ? 1 : 2;
+                for (let i = 0; i < spawnCount; i++) spawnParticle();
 
-                // Update & gambar
                 const nextParticles = [];
+                const len = particles.length;
 
-                for (let i = 0; i < particles.length; i++) {
+                for (let i = 0; i < len; i++) {
                     const p = particles[i];
-
                     p.x += p.vx;
                     p.y += p.vy;
-                    p.vy -= 0.008;   // sedikit melayang ke atas
-                    p.vx *= 0.995;   // drag horizontal
+                    p.vy -= 0.008;
+                    p.vx *= 0.995;
                     p.life -= p.decay;
 
                     if (p.life <= 0) continue;
@@ -1031,22 +858,20 @@
                     const size = p.size * (0.4 + p.life * 0.8);
                     const { r, g, b } = p.color;
 
-                    // Glow luar
-                    const gradient = ctx.createRadialGradient(
-                        p.x, p.y, 0,
-                        p.x, p.y, size * 4.5
-                    );
-                    gradient.addColorStop(0,   `rgba(${r},${g},${b},${alpha})`);
-                    gradient.addColorStop(0.35,`rgba(${r},${g},${b},${alpha * 0.55})`);
-                    gradient.addColorStop(1,   `rgba(${r},${g},${b},0)`);
-
-                    ctx.fillStyle = gradient;
+                    // Glow sederhana (tanpa createRadialGradient → lebih cepat)
+                    ctx.fillStyle = `rgba(${r},${g},${b},${alpha * 0.35})`;
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, size * 4.5, 0, Math.PI * 2);
+                    ctx.arc(p.x, p.y, size * 3.5, 0, Math.PI * 2);
                     ctx.fill();
 
-                    // Inti terang (mirip percikan api)
-                    ctx.fillStyle = `rgba(255,255,255,${alpha * 0.75})`;
+                    // Inti partikel
+                    ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, size * 1.4, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Highlight putih
+                    ctx.fillStyle = `rgba(255,255,255,${alpha * 0.6})`;
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, Math.max(size * 0.5, 0.4), 0, Math.PI * 2);
                     ctx.fill();
@@ -1055,10 +880,7 @@
                 }
 
                 particles = nextParticles;
-
                 ctx.globalCompositeOperation = 'source-over';
-
-                requestAnimationFrame(animate);
             }
 
             requestAnimationFrame(animate);
