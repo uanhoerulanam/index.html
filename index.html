@@ -56,8 +56,42 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             overflow-x: hidden;
+            background-color: #080a11;
+        }
+
+        /* ====== VIDEO BACKGROUND ====== */
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            object-position: center;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Overlay gelap supaya teks tetap kebaca */
+        #bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                radial-gradient(
+                    circle at 50% 40%,
+                    rgba(8, 10, 17, 0.35) 0%,
+                    rgba(8, 10, 17, 0.75) 60%,
+                    rgba(8, 10, 17, 0.92) 100%
+                );
         }
 
         .axm-card {
@@ -296,10 +330,35 @@
     </style>
 </head>
 
-<body class="bg-axmDark text-slate-100 min-h-screen font-sans relative antialiased selection:bg-axmPurple selection:text-white">
+<body class="text-slate-100 min-h-screen font-sans relative antialiased selection:bg-axmPurple selection:text-white">
 
-    <!-- BACKGROUND GLOW -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <!-- ====== VIDEO BACKGROUND ====== -->
+    <video
+        id="bg-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/ToastAndroForever.png">
+
+        <!-- jsDelivr CDN (lebih cepat & stabil) -->
+        <source
+            src="https://cdn.jsdelivr.net/gh/uanhoerulanam/index.html@main/Dark%20Blue%20Fire.mp4"
+            type="video/mp4">
+
+        <!-- Fallback raw GitHub -->
+        <source
+            src="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/Dark%20Blue%20Fire.mp4"
+            type="video/mp4">
+
+    </video>
+
+    <!-- OVERLAY GELAP BIAR TEKS KEBACA -->
+    <div id="bg-overlay"></div>
+
+    <!-- BACKGROUND GLOW (di atas overlay video) -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-[2]">
         <div class="blob-blue top-[-10%] left-[-10%] animate-pulse-glow"></div>
 
         <div
@@ -373,7 +432,7 @@
 
             <!-- NAMA WEBSITE -->
             <h1 class="profile-title font-heading text-2xl md:text-3xl font-black tracking-wider text-axm-gradient mb-2 uppercase">
-                ANKRAI X MOTION
+                ANKRAIX MOTION
             </h1>
 
             <!-- USERNAME -->
@@ -826,6 +885,31 @@
                 closeQrModal();
             }
         });
+
+        /* ============================================================
+           PASTIKAN VIDEO AUTOPLAY DI MOBILE (iOS / Android)
+           ============================================================ */
+        (function () {
+            const video = document.getElementById('bg-video');
+            if (!video) return;
+
+            // Beberapa browser butuh di-force play setelah interaksi pertama
+            function tryPlay() {
+                const p = video.play();
+                if (p && typeof p.catch === 'function') {
+                    p.catch(() => {});
+                }
+            }
+
+            tryPlay();
+            document.addEventListener('touchstart', tryPlay, { once: true });
+            document.addEventListener('click', tryPlay, { once: true });
+
+            // Kalau tab kembali aktif, lanjut play
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) tryPlay();
+            });
+        })();
 
         /* ============================================================
            EFEK PERCIKAN API UNGU & BIRU DI SEKELILING LOGO
