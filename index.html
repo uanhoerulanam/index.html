@@ -168,8 +168,19 @@
             animation: pulseGlow 3s ease-in-out infinite alternate;
         }
 
+        /* CANVAS PARTIKEL PERCIKAN API */
+        .spark-canvas {
+            position: absolute;
+            inset: -75px;
+            width: calc(100% + 150px);
+            height: calc(100% + 150px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
         .avatar-image {
             display: block;
+            position: relative;
 
             width: 100%;
             height: 100%;
@@ -186,6 +197,8 @@
 
             border: none;
             outline: none;
+
+            z-index: 2;
         }
 
         .blob-blue {
@@ -342,8 +355,11 @@
         <!-- PROFILE -->
         <section class="text-center w-full mb-10 flex flex-col items-center">
 
-            <!-- LOGO AXM DARI GITHUB -->
+            <!-- LOGO AXM + EFEK PERCIKAN API -->
             <div class="avatar-glow mb-7">
+
+                <!-- Canvas partikel api ungu & biru -->
+                <canvas id="spark-canvas" class="spark-canvas"></canvas>
 
                 <img
                     id="axm-logo"
@@ -810,6 +826,159 @@
                 closeQrModal();
             }
         });
+
+        /* ============================================================
+           EFEK PERCIKAN API UNGU & BIRU DI SEKELILING LOGO
+           ============================================================ */
+        (function () {
+            const canvas = document.getElementById('spark-canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+
+            let W = 0;
+            let H = 0;
+            let particles = [];
+            const MAX_PARTICLES = 220;
+
+            // Palet warna api: ungu & biru
+            const COLORS = [
+                { r: 217, g: 0,   b: 255 }, // ungu terang
+                { r: 150, g: 0,   b: 255 }, // ungu keunguan
+                { r: 0,   g: 210, b: 255 }, // biru cyan
+                { r: 60,  g: 120, b: 255 }  // biru elektrik
+            ];
+
+            function resize() {
+                const rect = canvas.getBoundingClientRect();
+                W = rect.width;
+                H = rect.height;
+
+                canvas.width = Math.floor(W * dpr);
+                canvas.height = Math.floor(H * dpr);
+
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Radius logo di dalam koordinat canvas
+            function getLogoRadius() {
+                const logoEl = document.querySelector('.avatar-glow');
+                if (!logoEl) return W * 0.25;
+
+                const logoSize = logoEl.getBoundingClientRect().width;
+                const totalSize = logoSize + 150; // sama dengan inset CSS (-75px x2)
+                return (logoSize / 2) * (W / totalSize);
+            }
+
+            function spawnParticle() {
+                if (particles.length >= MAX_PARTICLES) return;
+
+                const cx = W / 2;
+                const cy = H / 2;
+                const radius = getLogoRadius();
+
+                // Emit dari sekeliling lingkaran logo
+                const angle = Math.random() * Math.PI * 2;
+
+                // Sedikit variasi radius agar tidak terlalu rapi
+                const rOffset = (Math.random() - 0.5) * 10;
+                const startX = cx + Math.cos(angle) * (radius + rOffset);
+                const startY = cy + Math.sin(angle) * (radius + rOffset);
+
+                const color = COLORS[(Math.random() * COLORS.length) | 0];
+
+                // Kecepatan: mengarah keluar dari lingkaran + sedikit ke atas
+                const speed = 0.3 + Math.random() * 1.2;
+                const vx = Math.cos(angle) * speed * 0.4 +
+                           (Math.random() - 0.5) * 0.4;
+                const vy = Math.sin(angle) * speed * 0.4 -
+                           (0.4 + Math.random() * 0.9); // bias ke atas
+
+                particles.push({
+                    x: startX,
+                    y: startY,
+                    vx: vx,
+                    vy: vy,
+                    life: 1,
+                    decay: 0.008 + Math.random() * 0.014,
+                    size: 1 + Math.random() * 2.2,
+                    color: color
+                });
+            }
+
+            let lastTime = 0;
+
+            function animate(time) {
+                // Batasi frame ke ~60 FPS feel
+                if (!lastTime) lastTime = time;
+                const delta = Math.min(time - lastTime, 33);
+                lastTime = time;
+
+                ctx.clearRect(0, 0, W, H);
+
+                // Additive blending → glow effect
+                ctx.globalCompositeOperation = 'lighter';
+
+                // Spawn beberapa partikel per frame
+                const spawnCount = Math.round(2 + delta / 16);
+                for (let i = 0; i < spawnCount; i++) {
+                    spawnParticle();
+                }
+
+                // Update & gambar
+                const nextParticles = [];
+
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy -= 0.008;   // sedikit melayang ke atas
+                    p.vx *= 0.995;   // drag horizontal
+                    p.life -= p.decay;
+
+                    if (p.life <= 0) continue;
+
+                    const alpha = p.life;
+                    const size = p.size * (0.4 + p.life * 0.8);
+                    const { r, g, b } = p.color;
+
+                    // Glow luar
+                    const gradient = ctx.createRadialGradient(
+                        p.x, p.y, 0,
+                        p.x, p.y, size * 4.5
+                    );
+                    gradient.addColorStop(0,   `rgba(${r},${g},${b},${alpha})`);
+                    gradient.addColorStop(0.35,`rgba(${r},${g},${b},${alpha * 0.55})`);
+                    gradient.addColorStop(1,   `rgba(${r},${g},${b},0)`);
+
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, size * 4.5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Inti terang (mirip percikan api)
+                    ctx.fillStyle = `rgba(255,255,255,${alpha * 0.75})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, Math.max(size * 0.5, 0.4), 0, Math.PI * 2);
+                    ctx.fill();
+
+                    nextParticles.push(p);
+                }
+
+                particles = nextParticles;
+
+                ctx.globalCompositeOperation = 'source-over';
+
+                requestAnimationFrame(animate);
+            }
+
+            requestAnimationFrame(animate);
+        })();
     </script>
 
 </body>
