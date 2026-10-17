@@ -834,11 +834,11 @@
             requestAnimationFrame(animate);
         })();
 
-        // ==== ANIMASI BACKGROUND API (BIRU & UNGU) VERSI REALISTIS ====
+        // ==== ANIMASI BACKGROUND API (BIRU & UNGU) REALISTIS ====
         (function () {
             const canvas = document.getElementById('fire-bg');
             if (!canvas) return;
-            const ctx = canvas.getContext('2d', { alpha: true });
+            const ctx = canvas.getContext('2d');
             const dpr = Math.min(window.devicePixelRatio || 1, 2);
             const isMobile = window.matchMedia('(max-width: 768px)').matches
                           || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -846,8 +846,7 @@
             let W = 0, H = 0;
             let particles = [];
             
-            // Jumlah partikel dikurangi agar ringan, tapi dibuat kecil-kecil agar menyerupai api
-            const MAX_PARTICLES = isMobile ? 150 : 350;
+            const MAX_PARTICLES = isMobile ? 200 : 400;
             const TARGET_FPS = isMobile ? 30 : 60;
             const FRAME_INTERVAL = 1000 / TARGET_FPS;
 
@@ -857,6 +856,9 @@
                 canvas.width = Math.floor(W * dpr);
                 canvas.height = Math.floor(H * dpr);
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                // Isi background dasar
+                ctx.fillStyle = '#080a11';
+                ctx.fillRect(0, 0, W, H);
             }
             resize();
             let resizeTimer;
@@ -868,24 +870,22 @@
             function createParticle() {
                 if (particles.length >= MAX_PARTICLES) return;
 
-                // Muncul dari bawah
                 const x = Math.random() * W;
-                const y = H + 20;
+                const y = H + 10; // Mulai dari bawah layar
                 
                 particles.push({
                     x: x,
                     y: y,
-                    vx: (Math.random() - 0.5) * 1.5,
-                    vy: -(1 + Math.random() * 3), 
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: -(2 + Math.random() * 6), 
                     life: 1,
-                    decay: 0.003 + Math.random() * 0.008,
-                    size: 3 + Math.random() * 12, // Ukuran kecil (3px - 15px)
-                    colorType: Math.random() // 0-1 untuk nentuin warna
+                    decay: 0.006 + Math.random() * 0.012,
+                    size: 5 + Math.random() * 15,
+                    seed: Math.random() * 100
                 });
             }
 
             let lastFrameTime = 0;
-            let timeOffset = 0;
 
             function animate(time) {
                 requestAnimationFrame(animate);
@@ -894,16 +894,16 @@
                 if (elapsed < FRAME_INTERVAL) return;
                 lastFrameTime = time - (elapsed % FRAME_INTERVAL);
 
-                // Clear dengan efek "jejak" tipis biar api menyatu (kayak asap)
+                // EFEK TRAIL: Warnai ulang canvas dengan warna gelap transparan
+                // Ini bikin api ada "jejak asap" menyatunya
                 ctx.globalCompositeOperation = 'source-over';
-                ctx.fillStyle = 'rgba(8, 10, 17, 0.4)'; // Fade trail
+                ctx.fillStyle = 'rgba(8, 10, 17, 0.2)'; 
                 ctx.fillRect(0, 0, W, H);
 
+                // Mode penambahan cahaya untuk api
                 ctx.globalCompositeOperation = 'lighter';
-                timeOffset += 0.02;
 
-                // Spawn partikel
-                const spawnCount = isMobile ? 3 : 6;
+                const spawnCount = isMobile ? 5 : 10;
                 for (let i = 0; i < spawnCount; i++) {
                     createParticle();
                 }
@@ -912,48 +912,47 @@
                 
                 for (let i = 0; i < particles.length; i++) {
                     const p = particles[i];
-                    
-                    // Efek meliuk-liuk (turbulensi angin)
-                    const windX = Math.sin(timeOffset + p.y * 0.01) * 1.5;
-                    
-                    p.x += p.vx + windX;
-                    p.y += p.vy;
                     p.life -= p.decay;
 
                     if (p.life <= 0) continue;
 
+                    // Gerakan meliuk (Turbulensi)
+                    p.x += p.vx + Math.sin(time * 0.003 + p.seed) * 2;
+                    p.y += p.vy;
+
                     const alpha = p.life;
-                    // Ukuran membesar lalu mengecil
-                    const currentSize = p.size * (1.5 - p.life); 
-                    
+                    const currentSize = p.size * (1 + (1 - p.life) * 1.5);
+
                     let r, g, b;
-                    // Transisi warna: Putih (bara) -> Cyan -> Ungu -> Hitam
+                    // Gradasi warna api
                     if (p.life > 0.8) {
-                        // Bara putih / terang
-                        r = 255; g = 255; b = 255; 
+                        r = 180; g = 255; b = 255; // Putih/Cyan terang di dasar
                     } else if (p.life > 0.5) {
-                        // Biru Cyan
-                        r = 0; g = 210; b = 255;
+                        r = 0; g = 210; b = 255;   // Biru Cyan
                     } else if (p.life > 0.2) {
-                        // Ungu
-                        r = 217; g = 0; b = 255;
+                        r = 217; g = 0; b = 255;   // Ungu
                     } else {
-                        // Memudar (gelap)
-                        r = 80; g = 0; b = 100;
+                        r = 80; g = 0; b = 100;    // Ungu gelap (memudar)
                     }
 
-                    // Gambar partikel api (tumpang tindih)
-                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.4})`;
+                    // KUNCI: Gambar lonjong ke atas (bukan bulat)
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.scale(1, 2.5); // Tarik ke atas 2.5x lipat
+
+                    // Gambar glow
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.3})`;
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+                    ctx.arc(0, 0, currentSize, 0, Math.PI * 2);
                     ctx.fill();
 
-                    // Inti lebih terang
-                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.8})`;
+                    // Gambar inti terang
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.7})`;
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, currentSize * 0.5, 0, Math.PI * 2);
+                    ctx.arc(0, 0, currentSize * 0.6, 0, Math.PI * 2);
                     ctx.fill();
 
+                    ctx.restore();
                     nextParticles.push(p);
                 }
                 
@@ -961,6 +960,12 @@
             }
 
             requestAnimationFrame(animate);
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    particles = [];
+                }
+            });
         })();
     </script>
 
