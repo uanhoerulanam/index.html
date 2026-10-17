@@ -47,23 +47,23 @@
         html, body { margin: 0; padding: 0; height: 100%; }
         body { overflow-x: hidden; background-color: #080a11; }
 
-        /* ==== CANVAS API BACKGROUND ==== */
-        #fire-bg {
+        /* ==== CANVAS LUAR ANGKASA ==== */
+        #space-bg {
             position: fixed;
             inset: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
             pointer-events: none;
-            background-color: #080a11;
+            background: #080a11;
         }
 
         #bg-overlay {
             position: fixed; inset: 0; z-index: 1; pointer-events: none;
             background: radial-gradient(
-                circle at 50% 40%,
-                rgba(8, 10, 17, 0.2) 0%,
-                rgba(8, 10, 17, 0.7) 60%,
+                circle at 50% 50%,
+                transparent 0%,
+                rgba(8, 10, 17, 0.6) 60%,
                 rgba(8, 10, 17, 0.95) 100%
             );
         }
@@ -131,12 +131,12 @@
 
         .blob-blue {
             position: absolute; width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(0, 210, 255, 0.27) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(0, 210, 255, 0.15) 0%, transparent 70%);
             filter: blur(60px); z-index: -1; pointer-events: none;
         }
         .blob-purple {
             position: absolute; width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(217, 0, 255, 0.25) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(217, 0, 255, 0.15) 0%, transparent 70%);
             filter: blur(60px); z-index: -1; pointer-events: none;
         }
 
@@ -179,8 +179,8 @@
 
 <body class="text-slate-100 min-h-screen font-sans relative antialiased selection:bg-axmPurple selection:text-white">
 
-    <!-- CANVAS API PENGGANTI VIDEO -->
-    <canvas id="fire-bg"></canvas>
+    <!-- CANVAS LUAR ANGKASA -->
+    <canvas id="space-bg"></canvas>
 
     <audio id="bg-music" loop preload="auto">
         <source src="https://cdn.jsdelivr.net/gh/uanhoerulanam/index.html@main/backsound.mp3" type="audio/mpeg">
@@ -834,9 +834,9 @@
             requestAnimationFrame(animate);
         })();
 
-        // ==== ANIMASI BACKGROUND API (BIRU & UNGU) REALISTIS ====
+        // ==== ANIMASI BACKGROUND BINTANG LUAR ANGKASA ====
         (function () {
-            const canvas = document.getElementById('fire-bg');
+            const canvas = document.getElementById('space-bg');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -844,11 +844,10 @@
                           || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
             let W = 0, H = 0;
-            let particles = [];
-            
-            const MAX_PARTICLES = isMobile ? 200 : 400;
-            const TARGET_FPS = isMobile ? 30 : 60;
-            const FRAME_INTERVAL = 1000 / TARGET_FPS;
+            let stars = [];
+            let meteors = [];
+            const MAX_STARS = isMobile ? 150 : 300;
+            let time = 0;
 
             function resize() {
                 W = window.innerWidth;
@@ -856,10 +855,44 @@
                 canvas.width = Math.floor(W * dpr);
                 canvas.height = Math.floor(H * dpr);
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                // Isi background dasar
-                ctx.fillStyle = '#080a11';
-                ctx.fillRect(0, 0, W, H);
+                initStars();
             }
+
+            function initStars() {
+                stars = [];
+                for (let i = 0; i < MAX_STARS; i++) {
+                    stars.push({
+                        x: Math.random() * W,
+                        y: Math.random() * H,
+                        radius: Math.random() * 1.5 + 0.5,
+                        alpha: Math.random(),
+                        twinkleSpeed: 0.01 + Math.random() * 0.03,
+                        speedY: Math.random() * 0.2 + 0.05,
+                        color: Math.random() > 0.8 ? (Math.random() > 0.5 ? '#00d2ff' : '#d900ff') : '#ffffff'
+                    });
+                }
+            }
+
+            function createMeteor() {
+                if (Math.random() > 0.03) return; // Peluang muncul meteor
+                
+                const startX = Math.random() * W;
+                const startY = -50;
+                const length = 100 + Math.random() * 150;
+                const speed = 4 + Math.random() * 6;
+                
+                meteors.push({
+                    x: startX,
+                    y: startY,
+                    dx: -speed * 0.5,
+                    dy: speed,
+                    length: length,
+                    life: 1,
+                    decay: 0.01 + Math.random() * 0.02,
+                    color: Math.random() > 0.5 ? '#00d2ff' : '#d900ff'
+                });
+            }
+
             resize();
             let resizeTimer;
             window.addEventListener('resize', () => {
@@ -867,105 +900,79 @@
                 resizeTimer = setTimeout(resize, 150);
             });
 
-            function createParticle() {
-                if (particles.length >= MAX_PARTICLES) return;
-
-                const x = Math.random() * W;
-                const y = H + 10; // Mulai dari bawah layar
-                
-                particles.push({
-                    x: x,
-                    y: y,
-                    vx: (Math.random() - 0.5) * 2,
-                    vy: -(2 + Math.random() * 6), 
-                    life: 1,
-                    decay: 0.006 + Math.random() * 0.012,
-                    size: 5 + Math.random() * 15,
-                    seed: Math.random() * 100
-                });
-            }
-
-            let lastFrameTime = 0;
-
-            function animate(time) {
+            function animate() {
                 requestAnimationFrame(animate);
+                time += 1;
 
-                const elapsed = time - lastFrameTime;
-                if (elapsed < FRAME_INTERVAL) return;
-                lastFrameTime = time - (elapsed % FRAME_INTERVAL);
+                ctx.clearRect(0, 0, W, H);
 
-                // EFEK TRAIL: Warnai ulang canvas dengan warna gelap transparan
-                // Ini bikin api ada "jejak asap" menyatunya
-                ctx.globalCompositeOperation = 'source-over';
-                ctx.fillStyle = 'rgba(8, 10, 17, 0.2)'; 
-                ctx.fillRect(0, 0, W, H);
-
-                // Mode penambahan cahaya untuk api
-                ctx.globalCompositeOperation = 'lighter';
-
-                const spawnCount = isMobile ? 5 : 10;
-                for (let i = 0; i < spawnCount; i++) {
-                    createParticle();
-                }
-
-                const nextParticles = [];
-                
-                for (let i = 0; i < particles.length; i++) {
-                    const p = particles[i];
-                    p.life -= p.decay;
-
-                    if (p.life <= 0) continue;
-
-                    // Gerakan meliuk (Turbulensi)
-                    p.x += p.vx + Math.sin(time * 0.003 + p.seed) * 2;
-                    p.y += p.vy;
-
-                    const alpha = p.life;
-                    const currentSize = p.size * (1 + (1 - p.life) * 1.5);
-
-                    let r, g, b;
-                    // Gradasi warna api
-                    if (p.life > 0.8) {
-                        r = 180; g = 255; b = 255; // Putih/Cyan terang di dasar
-                    } else if (p.life > 0.5) {
-                        r = 0; g = 210; b = 255;   // Biru Cyan
-                    } else if (p.life > 0.2) {
-                        r = 217; g = 0; b = 255;   // Ungu
-                    } else {
-                        r = 80; g = 0; b = 100;    // Ungu gelap (memudar)
+                // Gambar bintang
+                for (let i = 0; i < stars.length; i++) {
+                    const s = stars[i];
+                    
+                    // Pergerakan pelan ke atas
+                    s.y -= s.speedY;
+                    if (s.y < -5) {
+                        s.y = H + 5;
+                        s.x = Math.random() * W;
                     }
 
-                    // KUNCI: Gambar lonjong ke atas (bukan bulat)
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.scale(1, 2.5); // Tarik ke atas 2.5x lipat
+                    // Efek berkedip (twinkle)
+                    s.alpha = 0.3 + (Math.sin(time * s.twinkleSpeed) * 0.5 + 0.5) * 0.7;
 
-                    // Gambar glow
-                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.3})`;
                     ctx.beginPath();
-                    ctx.arc(0, 0, currentSize, 0, Math.PI * 2);
+                    ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = s.color;
+                    ctx.globalAlpha = s.alpha;
                     ctx.fill();
 
-                    // Gambar inti terang
-                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.7})`;
-                    ctx.beginPath();
-                    ctx.arc(0, 0, currentSize * 0.6, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    ctx.restore();
-                    nextParticles.push(p);
+                    // Glow untuk bintang yang lebih besar
+                    if (s.radius > 1.2) {
+                        ctx.globalAlpha = s.alpha * 0.3;
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, s.radius * 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                 }
-                
-                particles = nextParticles;
+                ctx.globalAlpha = 1;
+
+                // Spawn & Gambar Meteor
+                createMeteor();
+                for (let i = meteors.length - 1; i >= 0; i--) {
+                    const m = meteors[i];
+                    m.x += m.dx;
+                    m.y += m.dy;
+                    m.life -= m.decay;
+
+                    if (m.life <= 0) {
+                        meteors.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.strokeStyle = m.color;
+                    ctx.lineWidth = 2;
+                    ctx.lineCap = 'round';
+                    ctx.globalAlpha = m.life;
+
+                    // Gambar ekor meteor
+                    const gradient = ctx.createLinearGradient(
+                        m.x, m.y, 
+                        m.x - m.dx * (m.length / 10), 
+                        m.y - m.dy * (m.length / 10)
+                    );
+                    gradient.addColorStop(0, m.color);
+                    gradient.addColorStop(1, 'transparent');
+
+                    ctx.strokeStyle = gradient;
+                    ctx.beginPath();
+                    ctx.moveTo(m.x, m.y);
+                    ctx.lineTo(m.x - m.dx * (m.length / 10), m.y - m.dy * (m.length / 10));
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
             }
 
             requestAnimationFrame(animate);
-
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    particles = [];
-                }
-            });
         })();
     </script>
 
