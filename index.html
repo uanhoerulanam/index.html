@@ -5,16 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="theme-color" content="#080a11">
-    <meta name="description" content="Official Links Ankraix Motion. Temukan komunitas, preset, dan konten terbaru.">
+    <meta name="description" content="Official Links Ankrai X Motion. Temukan komunitas, preset, dan konten terbaru.">
 
-    <title>Ankraix Motion (aXM) | Official Links</title>
+    <title>Ankrai X Motion (aXM) | Official Links</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
@@ -47,23 +44,13 @@
 
     <style>
         * { box-sizing: border-box; }
-
         html, body { margin: 0; padding: 0; height: 100%; }
-
-        body {
-            overflow-x: hidden;
-            background-color: #080a11;
-        }
+        body { overflow-x: hidden; background-color: #080a11; }
 
         #bg-video {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            z-index: 0;
-            pointer-events: none;
+            position: fixed; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; object-position: center;
+            z-index: 0; pointer-events: none;
             transform: translate3d(0, 0, 0);
             -webkit-transform: translate3d(0, 0, 0);
             backface-visibility: hidden;
@@ -74,56 +61,36 @@
         }
 
         #bg-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-            background:
-                radial-gradient(
-                    circle at 50% 40%,
-                    rgba(8, 10, 17, 0.30) 0%,
-                    rgba(8, 10, 17, 0.72) 60%,
-                    rgba(8, 10, 17, 0.92) 100%
-                );
-        }
-
-        /* ====== CANVAS EFEK KLIK (di atas semua) ====== */
-        #fx-canvas {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        .axm-card {
-            background: linear-gradient(
-                135deg,
-                rgba(15, 20, 34, 0.88) 0%,
-                rgba(10, 13, 24, 0.96) 100%
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
+            background: radial-gradient(
+                circle at 50% 40%,
+                rgba(8, 10, 17, 0.30) 0%,
+                rgba(8, 10, 17, 0.72) 60%,
+                rgba(8, 10, 17, 0.92) 100%
             );
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+        }
+
+        #fx-canvas {
+            position: fixed; inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999;
+        }
+
+        /* ==== OPTIMASI: TANPA BACKDROP-FILTER ==== */
+        .axm-card {
+            background: rgba(15, 20, 34, 0.92);
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
             transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            position: relative; overflow: hidden;
         }
-
         .axm-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
+            content: ''; position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent);
-            transition: left 0.6s ease;
-            pointer-events: none;
+            transition: left 0.6s ease; pointer-events: none;
         }
-
         .axm-card:hover::before { left: 100%; }
-
         .axm-card:hover {
             border-color: rgba(0, 210, 255, 0.35);
             box-shadow: 0 0 22px rgba(0, 210, 255, 0.12), 0 0 22px rgba(217, 0, 255, 0.10);
@@ -132,102 +99,69 @@
 
         .text-axm-gradient {
             background: linear-gradient(135deg, #00d2ff 0%, #ffffff 50%, #d900ff 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
+            -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .avatar-glow {
-            position: relative;
-            width: 144px;
-            height: 144px;
-            border-radius: 50%;
-            isolation: isolate;
-            background: #080a11;
-            box-shadow: 0 0 18px rgba(0, 210, 255, 0.30), 0 0 32px rgba(217, 0, 255, 0.20);
+        .profile-title {
+            letter-spacing: 0.16em;
         }
 
+        .avatar-glow {
+            position: relative; width: 144px; height: 144px;
+            border-radius: 50%; isolation: isolate; background: #080a11;
+            box-shadow: 0 0 18px rgba(0, 210, 255, 0.30), 0 0 32px rgba(217, 0, 255, 0.20);
+        }
         .avatar-glow::before {
-            content: '';
-            position: absolute;
-            inset: -5px;
-            border-radius: 50%;
+            content: ''; position: absolute; inset: -5px; border-radius: 50%;
             background: linear-gradient(135deg, #00d2ff, #4267ff, #d900ff);
-            filter: blur(13px);
-            opacity: 0.75;
-            z-index: -1;
+            filter: blur(13px); opacity: 0.75; z-index: -1;
             animation: pulseGlow 3s ease-in-out infinite alternate;
         }
 
         .spark-canvas {
-            position: absolute;
-            inset: -75px;
-            width: calc(100% + 150px);
-            height: calc(100% + 150px);
-            pointer-events: none;
-            z-index: 1;
+            position: absolute; inset: -75px;
+            width: calc(100% + 150px); height: calc(100% + 150px);
+            pointer-events: none; z-index: 1;
         }
 
         .avatar-image {
-            display: block;
-            position: relative;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            object-position: center;
+            display: block; position: relative;
+            width: 100%; height: 100%;
+            border-radius: 50%; object-fit: cover; object-position: center;
             transform: scale(1.12);
-            background: transparent;
-            border: none;
-            outline: none;
+            background: transparent; border: none; outline: none;
             z-index: 2;
         }
 
         .blob-blue {
-            position: absolute;
-            width: 350px;
-            height: 350px;
+            position: absolute; width: 350px; height: 350px;
             background: radial-gradient(circle, rgba(0, 210, 255, 0.27) 0%, transparent 70%);
-            filter: blur(60px);
-            z-index: -1;
-            pointer-events: none;
+            filter: blur(60px); z-index: -1; pointer-events: none;
         }
-
         .blob-purple {
-            position: absolute;
-            width: 350px;
-            height: 350px;
+            position: absolute; width: 350px; height: 350px;
             background: radial-gradient(circle, rgba(217, 0, 255, 0.25) 0%, transparent 70%);
-            filter: blur(60px);
-            z-index: -1;
-            pointer-events: none;
+            filter: blur(60px); z-index: -1; pointer-events: none;
         }
 
+        /* ==== OPTIMASI: TANPA BLUR ==== */
         .glass-btn {
-            background: rgba(255, 255, 255, 0.045);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.2s ease;
         }
-
         .glass-btn:hover {
-            background: rgba(255, 255, 255, 0.11);
+            background: rgba(255, 255, 255, 0.15);
             border-color: rgba(255, 255, 255, 0.20);
         }
-
-        #music-btn { position: relative; }
 
         #music-btn.playing {
             color: #00d2ff;
             border-color: rgba(0, 210, 255, 0.5);
             background: rgba(0, 210, 255, 0.10);
         }
-
-        #music-btn.playing i {
-            animation: musicPulse 1.2s ease-in-out infinite;
-        }
-
+        #music-btn.playing i { animation: musicPulse 1.2s ease-in-out infinite; }
         @keyframes musicPulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.15); }
@@ -244,7 +178,7 @@
 
         @media (max-width: 380px) {
             .avatar-glow { width: 128px; height: 128px; }
-            .profile-title { font-size: 21px; }
+            .profile-title { font-size: 21px; letter-spacing: 0.1em; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -258,31 +192,18 @@
 
 <body class="text-slate-100 min-h-screen font-sans relative antialiased selection:bg-axmPurple selection:text-white">
 
-    <!-- AUDIO BACKGROUND -->
     <audio id="bg-music" loop preload="auto">
         <source src="https://cdn.jsdelivr.net/gh/uanhoerulanam/index.html@main/backsound.mp3" type="audio/mpeg">
         <source src="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/backsound.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- VIDEO BACKGROUND -->
-    <video
-        id="bg-video"
-        autoplay
-        muted
-        loop
-        playsinline
-        webkit-playsinline
-        disablepictureinpicture
-        preload="auto"
+    <video id="bg-video" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="auto"
         poster="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/ToastAndroForever.png">
-
         <source src="https://cdn.jsdelivr.net/gh/uanhoerulanam/index.html@main/Dark%20Blue%20Fire.mp4" type="video/mp4">
         <source src="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/Dark%20Blue%20Fire.mp4" type="video/mp4">
     </video>
 
     <div id="bg-overlay"></div>
-
-    <!-- CANVAS EFEK KLIK/TOUCH -->
     <canvas id="fx-canvas"></canvas>
 
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-[2]">
@@ -294,7 +215,6 @@
     <main class="relative z-10 max-w-lg mx-auto px-4 py-8 md:py-12 flex flex-col items-center">
 
         <header class="w-full flex justify-between items-center mb-10 px-2">
-
             <div class="flex items-center space-x-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
                 <span class="font-heading text-xs uppercase tracking-widest text-cyan-300 font-semibold">
@@ -303,38 +223,34 @@
             </div>
 
             <div class="flex items-center space-x-2">
-
-                <button type="button" id="music-btn" onclick="toggleMusic()" class="glass-btn p-3 rounded-xl text-slate-300 hover:text-white" title="Musik On/Off" aria-label="Toggle musik">
+                <button type="button" id="music-btn" onclick="toggleMusic()" class="glass-btn p-3 rounded-xl text-slate-300 hover:text-white" title="Musik On/Off">
                     <i id="music-icon" class="fa-solid fa-volume-xmark text-base"></i>
                 </button>
-
-                <button type="button" onclick="openQrModal()" class="glass-btn p-3 rounded-xl text-slate-300 hover:text-white" title="QR Code Profil" aria-label="Buka QR Code">
+                <button type="button" onclick="openQrModal()" class="glass-btn p-3 rounded-xl text-slate-300 hover:text-white" title="QR Code">
                     <i class="fa-solid fa-qrcode text-base"></i>
                 </button>
-
-                <button type="button" onclick="shareProfile()" class="glass-btn p-3 rounded-xl text-slate-300 hover:text-white" title="Bagikan Profil" aria-label="Bagikan profil">
+                <button type="button" onclick="shareProfile()" class="glass-btn p-3 rounded-xl text-slate-300 hover:text-white" title="Bagikan">
                     <i class="fa-solid fa-share-nodes text-base"></i>
                 </button>
-
             </div>
         </header>
 
         <section class="text-center w-full mb-10 flex flex-col items-center">
-
             <div class="avatar-glow mb-7">
                 <canvas id="spark-canvas" class="spark-canvas"></canvas>
-                <img id="axm-logo" src="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/ToastAndroForever.png" alt="Logo Ankraix Motion aXM" class="avatar-image" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/uanhoerulanam/gambar-ankraixmotion-/main/as.png';">
+                <img id="axm-logo" src="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/ToastAndroForever.png" alt="Logo Ankrai X Motion" class="avatar-image" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/uanhoerulanam/gambar-ankraixmotion-/main/as.png';">
             </div>
 
-            <h1 class="profile-title font-heading text-2xl md:text-3xl font-black tracking-wider text-axm-gradient mb-2 uppercase">
-                ANKRAIX MOTION
+            <!-- TEKS DIUBAH: ANKRAI X MOTION -->
+            <h1 class="profile-title font-heading text-2xl md:text-3xl font-black text-axm-gradient mb-2 uppercase">
+                ANKRAI X MOTION
             </h1>
 
             <p class="text-slate-400 font-medium text-sm tracking-wide mb-4">
                 @ankraixmotion
             </p>
 
-            <div class="inline-flex items-center px-3 py-2 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700/60 text-cyan-300 gap-2 mb-4 shadow-inner">
+            <div class="inline-flex items-center px-3 py-2 rounded-full text-xs font-semibold bg-slate-900/90 border border-slate-700/60 text-cyan-300 gap-2 mb-4 shadow-inner">
                 <i class="fa-solid fa-wand-magic-sparkles text-axmPurple"></i>
                 <span>share mod &amp; jual akun prem</span>
             </div>
@@ -342,7 +258,6 @@
             <p class="text-slate-300 text-sm max-w-sm leading-relaxed">
                 Wajib join saluran WhatsApp dan channel Telegram, serta follow dan subscribe akun kami, untuk mendapatkan informasi terbaru. Semua aplikasi mod yang saya bagikan 100% gratis.
             </p>
-
         </section>
 
         <section class="w-full space-y-4">
@@ -434,8 +349,9 @@
         </section>
 
         <footer class="mt-12 text-center text-xs text-slate-500 space-y-2">
+            <!-- TEKS DIUBAH: ANKRAI X MOTION -->
             <p class="font-heading text-slate-400">
-                ANKRAIX MOTION &copy; <span id="year"></span>
+                ANKRAI X MOTION &copy; <span id="year"></span>
             </p>
             <p class="text-[11px] text-slate-600">Official Links</p>
         </footer>
@@ -443,7 +359,7 @@
     </main>
 
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hide pointer-events-none w-11/12 max-w-sm">
-        <div class="bg-slate-900/95 border border-cyan-500/50 text-white px-4 py-3 rounded-2xl shadow-2xl backdrop-blur-xl flex items-center space-x-3">
+        <div class="bg-slate-900/95 border border-cyan-500/50 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center space-x-3">
             <div class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0">
                 <i class="fa-solid fa-check text-sm"></i>
             </div>
@@ -454,15 +370,16 @@
         </div>
     </div>
 
-    <div id="qr-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none">
+    <div id="qr-modal" class="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none">
         <div id="modal-content" class="axm-card rounded-3xl p-6 w-full max-w-xs text-center flex flex-col items-center relative border border-slate-700/60 scale-95">
-            <button type="button" onclick="closeQrModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white p-2" aria-label="Tutup QR Code">
+            <button type="button" onclick="closeQrModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white p-2">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
             <h3 class="font-heading text-base font-bold text-white mb-2">QR CODE PROFIL</h3>
             <p class="text-xs text-slate-400 mb-4">Pindai QR untuk membuka website ini.</p>
             <div class="bg-white p-3.5 rounded-2xl shadow-inner mb-4 flex items-center justify-center min-w-[194px] min-h-[194px]" id="qrcode"></div>
-            <p class="text-xs font-heading text-axm-gradient">Ankraix Motion</p>
+            <!-- TEKS DIUBAH: Ankrai X Motion -->
+            <p class="text-xs font-heading text-axm-gradient">Ankrai X Motion</p>
         </div>
     </div>
 
@@ -517,8 +434,8 @@
 
         function shareProfile() {
             const shareData = {
-                title: 'Ankraix Motion - Official Links',
-                text: 'Temukan tautan resmi Ankraix Motion.',
+                title: 'Ankrai X Motion - Official Links',
+                text: 'Temukan tautan resmi Ankrai X Motion.',
                 url: window.location.href
             };
             if (navigator.share) {
@@ -570,10 +487,13 @@
             if (event.key === 'Escape') closeQrModal();
         });
 
-        // VIDEO AUTOPLAY
+        // ==== VIDEO AUTOPLAY (PERBAIKAN LAG) ====
         (function () {
             const video = document.getElementById('bg-video');
             if (!video) return;
+
+            // Set kecepatan video sedikit lebih lambat
+            video.playbackRate = 0.85;
 
             function tryPlay() {
                 const p = video.play();
@@ -587,17 +507,15 @@
             });
         })();
 
-        // MUSIK BACKGROUND
+        // ==== MUSIK BACKGROUND ====
         (function () {
             const music = document.getElementById('bg-music');
             const btn = document.getElementById('music-btn');
             const icon = document.getElementById('music-icon');
-
             if (!music || !btn || !icon) return;
 
             music.volume = 0;
             const TARGET_VOLUME = 0.55;
-
             let userWantsMusic = localStorage.getItem('axm_music') === 'on';
             let fadeInterval = null;
 
@@ -610,7 +528,6 @@
                     btn.classList.remove('playing');
                 }
             }
-
             function fadeIn() {
                 clearInterval(fadeInterval);
                 fadeInterval = setInterval(() => {
@@ -622,7 +539,6 @@
                     }
                 }, 50);
             }
-
             function fadeOut() {
                 clearInterval(fadeInterval);
                 fadeInterval = setInterval(() => {
@@ -635,23 +551,14 @@
                     }
                 }, 50);
             }
-
             function playMusic() {
                 const p = music.play();
                 if (p && typeof p.then === 'function') {
-                    p.then(() => {
-                        fadeIn();
-                        setIconPlaying(true);
-                    }).catch(() => {
-                        setIconPlaying(false);
-                    });
+                    p.then(() => { fadeIn(); setIconPlaying(true); })
+                     .catch(() => { setIconPlaying(false); });
                 }
             }
-
-            function stopMusic() {
-                fadeOut();
-                setIconPlaying(false);
-            }
+            function stopMusic() { fadeOut(); setIconPlaying(false); }
 
             window.toggleMusic = function () {
                 if (music.paused) {
@@ -668,55 +575,37 @@
             let autoStarted = false;
             function tryAutoStart() {
                 if (autoStarted) return;
-
-                if (localStorage.getItem('axm_music') === 'off') {
-                    autoStarted = true;
-                    return;
-                }
-
+                if (localStorage.getItem('axm_music') === 'off') { autoStarted = true; return; }
                 autoStarted = true;
                 userWantsMusic = true;
                 localStorage.setItem('axm_music', 'on');
                 playMusic();
             }
-
             ['click', 'touchstart', 'keydown', 'scroll'].forEach(evt => {
                 document.addEventListener(evt, tryAutoStart, { once: true, passive: true });
             });
-
             tryAutoStart();
 
             document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    if (!music.paused) music.pause();
-                } else {
-                    if (userWantsMusic && localStorage.getItem('axm_music') !== 'off') {
-                        playMusic();
-                    }
-                }
+                if (document.hidden) { if (!music.paused) music.pause(); }
+                else { if (userWantsMusic && localStorage.getItem('axm_music') !== 'off') playMusic(); }
             });
 
             setIconPlaying(false);
         })();
 
-        // EFEK PERCIKAN API DI SEKITAR LOGO
+        // ==== PARTIKEL API SEKITAR LOGO (OPTIMASI) ====
         (function () {
             const canvas = document.getElementById('spark-canvas');
             if (!canvas) return;
-
             const ctx = canvas.getContext('2d', { alpha: true });
             const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
             const isMobile = window.matchMedia('(max-width: 768px)').matches
                           || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-            const MAX_PARTICLES = isMobile ? 70 : 160;
-            const TARGET_FPS    = isMobile ? 30 : 60;
+            const MAX_PARTICLES = isMobile ? 60 : 120;
+            const TARGET_FPS = isMobile ? 30 : 60;
             const FRAME_INTERVAL = 1000 / TARGET_FPS;
-
-            let W = 0, H = 0;
-            let particles = [];
-
+            let W = 0, H = 0, particles = [];
             const COLORS = [
                 { r: 217, g: 0,   b: 255 },
                 { r: 150, g: 0,   b: 255 },
@@ -726,13 +615,11 @@
 
             function resize() {
                 const rect = canvas.getBoundingClientRect();
-                W = rect.width;
-                H = rect.height;
+                W = rect.width; H = rect.height;
                 canvas.width = Math.floor(W * dpr);
                 canvas.height = Math.floor(H * dpr);
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             }
-
             resize();
             let resizeTimer;
             window.addEventListener('resize', () => {
@@ -750,15 +637,12 @@
 
             function spawnParticle() {
                 if (particles.length >= MAX_PARTICLES) return;
-
-                const cx = W / 2;
-                const cy = H / 2;
+                const cx = W / 2, cy = H / 2;
                 const radius = getLogoRadius();
                 const angle = Math.random() * Math.PI * 2;
                 const rOffset = (Math.random() - 0.5) * 10;
                 const color = COLORS[(Math.random() * COLORS.length) | 0];
                 const speed = 0.3 + Math.random() * 1.2;
-
                 particles.push({
                     x: cx + Math.cos(angle) * (radius + rOffset),
                     y: cy + Math.sin(angle) * (radius + rOffset),
@@ -772,93 +656,56 @@
             }
 
             let lastFrameTime = 0;
-
             function animate(time) {
                 requestAnimationFrame(animate);
-
                 const elapsed = time - lastFrameTime;
                 if (elapsed < FRAME_INTERVAL) return;
                 lastFrameTime = time - (elapsed % FRAME_INTERVAL);
-
                 ctx.clearRect(0, 0, W, H);
                 ctx.globalCompositeOperation = 'lighter';
-
                 const spawnCount = isMobile ? 1 : 2;
                 for (let i = 0; i < spawnCount; i++) spawnParticle();
-
                 const nextParticles = [];
                 const len = particles.length;
-
                 for (let i = 0; i < len; i++) {
                     const p = particles[i];
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy -= 0.008;
-                    p.vx *= 0.995;
-                    p.life -= p.decay;
-
+                    p.x += p.vx; p.y += p.vy;
+                    p.vy -= 0.008; p.vx *= 0.995; p.life -= p.decay;
                     if (p.life <= 0) continue;
-
                     const alpha = p.life;
                     const size = p.size * (0.4 + p.life * 0.8);
                     const { r, g, b } = p.color;
-
                     ctx.fillStyle = `rgba(${r},${g},${b},${alpha * 0.35})`;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, size * 3.5, 0, Math.PI * 2);
-                    ctx.fill();
-
+                    ctx.beginPath(); ctx.arc(p.x, p.y, size * 3.5, 0, Math.PI * 2); ctx.fill();
                     ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, size * 1.4, 0, Math.PI * 2);
-                    ctx.fill();
-
+                    ctx.beginPath(); ctx.arc(p.x, p.y, size * 1.4, 0, Math.PI * 2); ctx.fill();
                     ctx.fillStyle = `rgba(255,255,255,${alpha * 0.6})`;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, Math.max(size * 0.5, 0.4), 0, Math.PI * 2);
-                    ctx.fill();
-
+                    ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(size * 0.5, 0.4), 0, Math.PI * 2); ctx.fill();
                     nextParticles.push(p);
                 }
-
                 particles = nextParticles;
                 ctx.globalCompositeOperation = 'source-over';
             }
-
             requestAnimationFrame(animate);
         })();
 
-        /* ============================================================
-           EFEK KLIK/TOUCH:
-           - Ledakan percikan (sparks) ke segala arah
-           - Garis retakan ala anime pecah kaca
-           - Ring gelombang kejut
-           ============================================================ */
+        // ==== EFEK KLIK (SPARK, CRACK, RING - OPTIMASI IDLE) ====
         (function () {
             const canvas = document.getElementById('fx-canvas');
             if (!canvas) return;
-
             const ctx = canvas.getContext('2d', { alpha: true });
             const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
             const isMobile = window.matchMedia('(max-width: 768px)').matches
                           || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
             let W = 0, H = 0;
-
-            // Kumpulan efek
-            let bursts = [];   // percikan
-            let cracks = [];   // retakan kaca
-            let rings = [];    // gelombang kejut
+            let bursts = [], cracks = [], rings = [];
 
             function resize() {
-                W = window.innerWidth;
-                H = window.innerHeight;
+                W = window.innerWidth; H = window.innerHeight;
                 canvas.width = Math.floor(W * dpr);
                 canvas.height = Math.floor(H * dpr);
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             }
-
             resize();
             let resizeTimer;
             window.addEventListener('resize', () => {
@@ -866,27 +713,23 @@
                 resizeTimer = setTimeout(resize, 150);
             });
 
-            // Warna spark: ungu, biru, cyan, putih, emas
             const SPARK_COLORS = [
-                { r: 217, g: 0,   b: 255 },  // ungu
-                { r: 150, g: 0,   b: 255 },  // ungu tua
-                { r: 0,   g: 210, b: 255 },  // biru cyan
-                { r: 60,  g: 120, b: 255 },  // biru elektrik
-                { r: 255, g: 255, b: 255 },  // putih
-                { r: 255, g: 200, b: 60  }   // emas
+                { r: 217, g: 0,   b: 255 },
+                { r: 150, g: 0,   b: 255 },
+                { r: 0,   g: 210, b: 255 },
+                { r: 60,  g: 120, b: 255 },
+                { r: 255, g: 255, b: 255 },
+                { r: 255, g: 200, b: 60  }
             ];
 
-            // Bikin spark ledakan dari titik (x, y)
             function createBurst(x, y) {
                 const count = isMobile ? 22 : 38;
                 for (let i = 0; i < count; i++) {
                     const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
                     const speed = 2 + Math.random() * 6;
                     const color = SPARK_COLORS[(Math.random() * SPARK_COLORS.length) | 0];
-
                     bursts.push({
-                        x: x,
-                        y: y,
+                        x: x, y: y,
                         vx: Math.cos(angle) * speed,
                         vy: Math.sin(angle) * speed,
                         life: 1,
@@ -898,19 +741,15 @@
                 }
             }
 
-            // Bikin retakan kaca (crack) dari titik (x, y)
             function createCrack(x, y) {
                 const numLines = isMobile ? 7 : 10;
                 const lines = [];
-
                 for (let i = 0; i < numLines; i++) {
                     const baseAngle = (Math.PI * 2 * i) / numLines + (Math.random() - 0.5) * 0.4;
                     const segments = [];
                     const segCount = 3 + (Math.random() * 3 | 0);
                     const totalLength = 40 + Math.random() * 90;
                     let curX = 0, curY = 0;
-
-                    // Bikin jalur zig-zag (retakan)
                     for (let s = 0; s < segCount; s++) {
                         const segLen = totalLength / segCount;
                         const angleJitter = (Math.random() - 0.5) * 0.9;
@@ -919,47 +758,31 @@
                         curY += Math.sin(a) * segLen;
                         segments.push({ x: curX, y: curY });
                     }
-
-                    lines.push({
-                        segments: segments,
-                        width: 1 + Math.random() * 1.8
-                    });
+                    lines.push({ segments: segments, width: 1 + Math.random() * 1.8 });
                 }
-
                 cracks.push({
-                    x: x,
-                    y: y,
-                    lines: lines,
-                    life: 1,
-                    decay: 0.025,
-                    scale: 0.4,
-                    scaleSpeed: 0.55
+                    x: x, y: y, lines: lines,
+                    life: 1, decay: 0.025,
+                    scale: 0.4, scaleSpeed: 0.55
                 });
             }
 
-            // Bikin gelombang kejut
             function createRing(x, y) {
                 rings.push({
-                    x: x,
-                    y: y,
-                    life: 1,
-                    decay: 0.05,
+                    x: x, y: y, life: 1, decay: 0.05,
                     radius: 5,
                     maxRadius: 60 + Math.random() * 30,
                     color: SPARK_COLORS[(Math.random() * 4) | 0]
                 });
             }
 
-            // Trigger semua efek di posisi tertentu
             function triggerEffects(x, y) {
                 createBurst(x, y);
                 createCrack(x, y);
                 createRing(x, y);
             }
 
-            // Event listener global: klik & tap
             document.addEventListener('click', function (e) {
-                // Skip kalau klik di area interaktif? Nggak, biar semua kena
                 triggerEffects(e.clientX, e.clientY);
             }, { passive: true });
 
@@ -970,132 +793,90 @@
                 }
             }, { passive: true });
 
-            // Animasi
             function animate() {
                 requestAnimationFrame(animate);
+
+                // Berhenti render jika tidak ada efek aktif
+                if (bursts.length === 0 && cracks.length === 0 && rings.length === 0) {
+                    return;
+                }
 
                 ctx.clearRect(0, 0, W, H);
                 ctx.globalCompositeOperation = 'lighter';
 
-                // ==== Update & gambar BURST ====
                 const nextBursts = [];
                 for (let i = 0; i < bursts.length; i++) {
                     const p = bursts[i];
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += p.gravity;   // ada gravitasi
-                    p.vx *= 0.97;
-                    p.vy *= 0.97;
+                    p.x += p.vx; p.y += p.vy;
+                    p.vy += p.gravity;
+                    p.vx *= 0.97; p.vy *= 0.97;
                     p.life -= p.decay;
-
                     if (p.life <= 0) continue;
-
                     const alpha = p.life;
                     const size = p.size * (0.5 + p.life * 0.6);
                     const { r, g, b } = p.color;
-
-                    // Glow luar
                     ctx.fillStyle = `rgba(${r},${g},${b},${alpha * 0.35})`;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, size * 3, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // Inti
+                    ctx.beginPath(); ctx.arc(p.x, p.y, size * 3, 0, Math.PI * 2); ctx.fill();
                     ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, size * 1.3, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // Highlight
+                    ctx.beginPath(); ctx.arc(p.x, p.y, size * 1.3, 0, Math.PI * 2); ctx.fill();
                     ctx.fillStyle = `rgba(255,255,255,${alpha * 0.65})`;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, Math.max(size * 0.5, 0.5), 0, Math.PI * 2);
-                    ctx.fill();
-
+                    ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(size * 0.5, 0.5), 0, Math.PI * 2); ctx.fill();
                     nextBursts.push(p);
                 }
                 bursts = nextBursts;
 
-                // ==== Update & gambar CRACK (retakan kaca) ====
                 const nextCracks = [];
                 for (let i = 0; i < cracks.length; i++) {
                     const c = cracks[i];
                     c.life -= c.decay;
                     c.scale += c.scaleSpeed * (1 - c.life);
-
                     if (c.life <= 0) continue;
-
                     const alpha = c.life;
                     ctx.save();
                     ctx.translate(c.x, c.y);
                     ctx.scale(c.scale, c.scale);
-
                     for (let j = 0; j < c.lines.length; j++) {
                         const line = c.lines[j];
-
-                        // Glow luar (biru/ungu)
                         ctx.strokeStyle = `rgba(0, 210, 255, ${alpha * 0.55})`;
                         ctx.lineWidth = line.width * 3;
-                        ctx.lineCap = 'round';
-                        ctx.lineJoin = 'round';
-                        ctx.beginPath();
-                        ctx.moveTo(0, 0);
-                        for (let k = 0; k < line.segments.length; k++) {
-                            ctx.lineTo(line.segments[k].x, line.segments[k].y);
-                        }
+                        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                        ctx.beginPath(); ctx.moveTo(0, 0);
+                        for (let k = 0; k < line.segments.length; k++) ctx.lineTo(line.segments[k].x, line.segments[k].y);
                         ctx.stroke();
-
-                        // Inti putih terang
                         ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
                         ctx.lineWidth = line.width;
-                        ctx.beginPath();
-                        ctx.moveTo(0, 0);
-                        for (let k = 0; k < line.segments.length; k++) {
-                            ctx.lineTo(line.segments[k].x, line.segments[k].y);
-                        }
+                        ctx.beginPath(); ctx.moveTo(0, 0);
+                        for (let k = 0; k < line.segments.length; k++) ctx.lineTo(line.segments[k].x, line.segments[k].y);
                         ctx.stroke();
                     }
-
-                    // Titik pusat retakan (flash kecil)
                     const flashSize = 4 * (1 - c.life) + 2;
                     ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-                    ctx.beginPath();
-                    ctx.arc(0, 0, flashSize, 0, Math.PI * 2);
-                    ctx.fill();
-
+                    ctx.beginPath(); ctx.arc(0, 0, flashSize, 0, Math.PI * 2); ctx.fill();
                     ctx.restore();
                     nextCracks.push(c);
                 }
                 cracks = nextCracks;
 
-                // ==== Update & gambar RING (gelombang kejut) ====
                 const nextRings = [];
                 for (let i = 0; i < rings.length; i++) {
                     const r = rings[i];
                     r.life -= r.decay;
                     r.radius += (r.maxRadius - r.radius) * 0.18;
-
                     if (r.life <= 0) continue;
-
                     const alpha = r.life;
                     const { r: rr, g, b } = r.color;
-
                     ctx.strokeStyle = `rgba(${rr},${g},${b},${alpha * 0.7})`;
                     ctx.lineWidth = 2 + (1 - r.life) * 2;
-                    ctx.beginPath();
-                    ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-                    ctx.stroke();
-
+                    ctx.beginPath(); ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2); ctx.stroke();
                     nextRings.push(r);
                 }
                 rings = nextRings;
 
                 ctx.globalCompositeOperation = 'source-over';
             }
-
             requestAnimationFrame(animate);
         })();
     </script>
 
 </body>
-</html>
+    </html>
