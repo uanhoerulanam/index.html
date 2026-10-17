@@ -244,8 +244,7 @@
         </section>
 
         <section class="w-full space-y-4">
-            <!-- (Link sosmed sama seperti sebelumnya) -->
-
+            <!-- WHATSAPP -->
             <div class="axm-card rounded-2xl p-4">
                 <div class="flex items-center space-x-3.5 mb-4">
                     <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl flex-shrink-0">
@@ -267,6 +266,7 @@
                 </div>
             </div>
 
+            <!-- TELEGRAM -->
             <div class="axm-card rounded-2xl p-4">
                 <div class="flex items-center space-x-3.5 mb-4">
                     <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 text-2xl flex-shrink-0">
@@ -288,6 +288,7 @@
                 </div>
             </div>
 
+            <!-- TIKTOK -->
             <div class="axm-card rounded-2xl p-4">
                 <div class="flex items-center space-x-3.5 mb-4">
                     <div class="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 text-2xl flex-shrink-0">
@@ -309,6 +310,7 @@
                 </div>
             </div>
 
+            <!-- YOUTUBE -->
             <div class="axm-card rounded-2xl p-4">
                 <div class="flex items-center space-x-3.5 mb-4">
                     <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 text-2xl flex-shrink-0">
@@ -329,7 +331,6 @@
                     </button>
                 </div>
             </div>
-
         </section>
 
         <footer class="mt-12 text-center text-xs text-slate-500 space-y-2">
@@ -651,7 +652,7 @@
             requestAnimationFrame(animate);
         })();
 
-        // ==== EFEK KLIK (SPARK, CRACK, RING) ====
+        // ==== EFEK KLIK ====
         (function () {
             const canvas = document.getElementById('fx-canvas');
             if (!canvas) return;
@@ -833,7 +834,7 @@
             requestAnimationFrame(animate);
         })();
 
-        // ==== ANIMASI BACKGROUND API (BIRU & UNGU) ====
+        // ==== ANIMASI BACKGROUND API (BIRU & UNGU) VERSI REALISTIS ====
         (function () {
             const canvas = document.getElementById('fire-bg');
             if (!canvas) return;
@@ -844,10 +845,12 @@
 
             let W = 0, H = 0;
             let particles = [];
-            const MAX_PARTICLES = isMobile ? 90 : 200;
+            
+            // Jumlah partikel dikurangi agar ringan, tapi dibuat kecil-kecil agar menyerupai api
+            const MAX_PARTICLES = isMobile ? 150 : 350;
             const TARGET_FPS = isMobile ? 30 : 60;
             const FRAME_INTERVAL = 1000 / TARGET_FPS;
-            
+
             function resize() {
                 W = window.innerWidth;
                 H = window.innerHeight;
@@ -864,40 +867,43 @@
 
             function createParticle() {
                 if (particles.length >= MAX_PARTICLES) return;
-                
-                // Api muncul dari bawah (dengan sedikit jarak acak)
+
+                // Muncul dari bawah
                 const x = Math.random() * W;
-                const y = H + (Math.random() * 50);
+                const y = H + 20;
                 
                 particles.push({
                     x: x,
                     y: y,
-                    vx: (Math.random() - 0.5) * 2, // Goyang kiri-kanan
-                    vy: -(2 + Math.random() * 5),  // Kecepatan naik
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: -(1 + Math.random() * 3), 
                     life: 1,
-                    decay: 0.004 + Math.random() * 0.008,
-                    size: 40 + Math.random() * 80, // Ukuran besar agar menyatu
-                    isPurple: Math.random() > 0.5
+                    decay: 0.003 + Math.random() * 0.008,
+                    size: 3 + Math.random() * 12, // Ukuran kecil (3px - 15px)
+                    colorType: Math.random() // 0-1 untuk nentuin warna
                 });
             }
 
             let lastFrameTime = 0;
-            
+            let timeOffset = 0;
+
             function animate(time) {
                 requestAnimationFrame(animate);
-                
+
                 const elapsed = time - lastFrameTime;
                 if (elapsed < FRAME_INTERVAL) return;
                 lastFrameTime = time - (elapsed % FRAME_INTERVAL);
 
-                // Clear canvas dengan warna dasar gelap
-                ctx.clearRect(0, 0, W, H);
+                // Clear dengan efek "jejak" tipis biar api menyatu (kayak asap)
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.fillStyle = 'rgba(8, 10, 17, 0.4)'; // Fade trail
+                ctx.fillRect(0, 0, W, H);
 
-                // Additive blending untuk efek cahaya api
                 ctx.globalCompositeOperation = 'lighter';
+                timeOffset += 0.02;
 
-                // Spawn partikel baru
-                const spawnCount = isMobile ? 2 : 5;
+                // Spawn partikel
+                const spawnCount = isMobile ? 3 : 6;
                 for (let i = 0; i < spawnCount; i++) {
                     createParticle();
                 }
@@ -907,67 +913,54 @@
                 for (let i = 0; i < particles.length; i++) {
                     const p = particles[i];
                     
-                    p.x += p.vx;
+                    // Efek meliuk-liuk (turbulensi angin)
+                    const windX = Math.sin(timeOffset + p.y * 0.01) * 1.5;
+                    
+                    p.x += p.vx + windX;
                     p.y += p.vy;
                     p.life -= p.decay;
-                    
-                    // Api makin ke atas makin cepat
-                    p.vy -= 0.05;
-                    // Gesekan angin
-                    p.vx *= 0.99;
 
                     if (p.life <= 0) continue;
 
                     const alpha = p.life;
-                    const currentSize = p.size * (1 + p.life * 0.5); // Membesar dikit saat naik
+                    // Ukuran membesar lalu mengecil
+                    const currentSize = p.size * (1.5 - p.life); 
                     
                     let r, g, b;
-                    if (p.isPurple) {
-                        // Warna Ungu: #d900ff
-                        r = Math.floor(217 * alpha);
-                        g = 0;
-                        b = 255;
+                    // Transisi warna: Putih (bara) -> Cyan -> Ungu -> Hitam
+                    if (p.life > 0.8) {
+                        // Bara putih / terang
+                        r = 255; g = 255; b = 255; 
+                    } else if (p.life > 0.5) {
+                        // Biru Cyan
+                        r = 0; g = 210; b = 255;
+                    } else if (p.life > 0.2) {
+                        // Ungu
+                        r = 217; g = 0; b = 255;
                     } else {
-                        // Warna Biru: #00d2ff
-                        r = 0;
-                        g = Math.floor(210 * alpha);
-                        b = 255;
+                        // Memudar (gelap)
+                        r = 80; g = 0; b = 100;
                     }
 
-                    // Gambar glow luar
-                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.3})`;
+                    // Gambar partikel api (tumpang tindih)
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.4})`;
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
                     ctx.fill();
 
-                    // Gambar inti api
-                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.7})`;
+                    // Inti lebih terang
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.8})`;
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, currentSize * 0.6, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // Titik putih terang di tengah (bara api)
-                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.6})`;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, currentSize * 0.2, 0, Math.PI * 2);
+                    ctx.arc(p.x, p.y, currentSize * 0.5, 0, Math.PI * 2);
                     ctx.fill();
 
                     nextParticles.push(p);
                 }
                 
                 particles = nextParticles;
-                ctx.globalCompositeOperation = 'source-over';
             }
 
             requestAnimationFrame(animate);
-
-            // Pause animasi saat tab tidak aktif (hemat baterai)
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    // Jika pindah tab, kita bersihkan partikel lama agar tidak menumpuk
-                    particles = [];
-                }
-            });
         })();
     </script>
 
