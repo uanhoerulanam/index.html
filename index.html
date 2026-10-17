@@ -47,26 +47,24 @@
         html, body { margin: 0; padding: 0; height: 100%; }
         body { overflow-x: hidden; background-color: #080a11; }
 
-        #bg-video {
-            position: fixed; inset: 0; width: 100%; height: 100%;
-            object-fit: cover; object-position: center;
-            z-index: 0; pointer-events: none;
-            transform: translate3d(0, 0, 0);
-            -webkit-transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            will-change: transform;
-            -webkit-perspective: 1000;
-            perspective: 1000;
+        /* ==== CANVAS API BACKGROUND ==== */
+        #fire-bg {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background-color: #080a11;
         }
 
         #bg-overlay {
             position: fixed; inset: 0; z-index: 1; pointer-events: none;
             background: radial-gradient(
                 circle at 50% 40%,
-                rgba(8, 10, 17, 0.30) 0%,
-                rgba(8, 10, 17, 0.72) 60%,
-                rgba(8, 10, 17, 0.92) 100%
+                rgba(8, 10, 17, 0.2) 0%,
+                rgba(8, 10, 17, 0.7) 60%,
+                rgba(8, 10, 17, 0.95) 100%
             );
         }
 
@@ -76,7 +74,6 @@
             pointer-events: none; z-index: 9999;
         }
 
-        /* ==== OPTIMASI: TANPA BACKDROP-FILTER ==== */
         .axm-card {
             background: rgba(15, 20, 34, 0.92);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -103,9 +100,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .profile-title {
-            letter-spacing: 0.16em;
-        }
+        .profile-title { letter-spacing: 0.16em; }
 
         .avatar-glow {
             position: relative; width: 144px; height: 144px;
@@ -145,7 +140,6 @@
             filter: blur(60px); z-index: -1; pointer-events: none;
         }
 
-        /* ==== OPTIMASI: TANPA BLUR ==== */
         .glass-btn {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -180,28 +174,18 @@
             .avatar-glow { width: 128px; height: 128px; }
             .profile-title { font-size: 21px; letter-spacing: 0.1em; }
         }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
     </style>
 </head>
 
 <body class="text-slate-100 min-h-screen font-sans relative antialiased selection:bg-axmPurple selection:text-white">
 
+    <!-- CANVAS API PENGGANTI VIDEO -->
+    <canvas id="fire-bg"></canvas>
+
     <audio id="bg-music" loop preload="auto">
         <source src="https://cdn.jsdelivr.net/gh/uanhoerulanam/index.html@main/backsound.mp3" type="audio/mpeg">
         <source src="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/backsound.mp3" type="audio/mpeg">
     </audio>
-
-    <video id="bg-video" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="auto"
-        poster="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/ToastAndroForever.png">
-        <source src="https://cdn.jsdelivr.net/gh/uanhoerulanam/index.html@main/Dark%20Blue%20Fire.mp4" type="video/mp4">
-        <source src="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/Dark%20Blue%20Fire.mp4" type="video/mp4">
-    </video>
 
     <div id="bg-overlay"></div>
     <canvas id="fx-canvas"></canvas>
@@ -241,7 +225,6 @@
                 <img id="axm-logo" src="https://raw.githubusercontent.com/uanhoerulanam/index.html/main/ToastAndroForever.png" alt="Logo Ankrai X Motion" class="avatar-image" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/uanhoerulanam/gambar-ankraixmotion-/main/as.png';">
             </div>
 
-            <!-- TEKS DIUBAH: ANKRAI X MOTION -->
             <h1 class="profile-title font-heading text-2xl md:text-3xl font-black text-axm-gradient mb-2 uppercase">
                 ANKRAI X MOTION
             </h1>
@@ -261,6 +244,7 @@
         </section>
 
         <section class="w-full space-y-4">
+            <!-- (Link sosmed sama seperti sebelumnya) -->
 
             <div class="axm-card rounded-2xl p-4">
                 <div class="flex items-center space-x-3.5 mb-4">
@@ -349,7 +333,6 @@
         </section>
 
         <footer class="mt-12 text-center text-xs text-slate-500 space-y-2">
-            <!-- TEKS DIUBAH: ANKRAI X MOTION -->
             <p class="font-heading text-slate-400">
                 ANKRAI X MOTION &copy; <span id="year"></span>
             </p>
@@ -378,7 +361,6 @@
             <h3 class="font-heading text-base font-bold text-white mb-2">QR CODE PROFIL</h3>
             <p class="text-xs text-slate-400 mb-4">Pindai QR untuk membuka website ini.</p>
             <div class="bg-white p-3.5 rounded-2xl shadow-inner mb-4 flex items-center justify-center min-w-[194px] min-h-[194px]" id="qrcode"></div>
-            <!-- TEKS DIUBAH: Ankrai X Motion -->
             <p class="text-xs font-heading text-axm-gradient">Ankrai X Motion</p>
         </div>
     </div>
@@ -487,26 +469,6 @@
             if (event.key === 'Escape') closeQrModal();
         });
 
-        // ==== VIDEO AUTOPLAY (PERBAIKAN LAG) ====
-        (function () {
-            const video = document.getElementById('bg-video');
-            if (!video) return;
-
-            // Set kecepatan video sedikit lebih lambat
-            video.playbackRate = 0.85;
-
-            function tryPlay() {
-                const p = video.play();
-                if (p && typeof p.catch === 'function') p.catch(() => {});
-            }
-
-            tryPlay();
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) video.pause();
-                else tryPlay();
-            });
-        })();
-
         // ==== MUSIK BACKGROUND ====
         (function () {
             const music = document.getElementById('bg-music');
@@ -594,7 +556,7 @@
             setIconPlaying(false);
         })();
 
-        // ==== PARTIKEL API SEKITAR LOGO (OPTIMASI) ====
+        // ==== PARTIKEL API SEKITAR LOGO ====
         (function () {
             const canvas = document.getElementById('spark-canvas');
             if (!canvas) return;
@@ -689,7 +651,7 @@
             requestAnimationFrame(animate);
         })();
 
-        // ==== EFEK KLIK (SPARK, CRACK, RING - OPTIMASI IDLE) ====
+        // ==== EFEK KLIK (SPARK, CRACK, RING) ====
         (function () {
             const canvas = document.getElementById('fx-canvas');
             if (!canvas) return;
@@ -795,12 +757,7 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-
-                // Berhenti render jika tidak ada efek aktif
-                if (bursts.length === 0 && cracks.length === 0 && rings.length === 0) {
-                    return;
-                }
-
+                if (bursts.length === 0 && cracks.length === 0 && rings.length === 0) return;
                 ctx.clearRect(0, 0, W, H);
                 ctx.globalCompositeOperation = 'lighter';
 
@@ -871,12 +828,148 @@
                     nextRings.push(r);
                 }
                 rings = nextRings;
-
                 ctx.globalCompositeOperation = 'source-over';
             }
             requestAnimationFrame(animate);
         })();
+
+        // ==== ANIMASI BACKGROUND API (BIRU & UNGU) ====
+        (function () {
+            const canvas = document.getElementById('fire-bg');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d', { alpha: true });
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            const isMobile = window.matchMedia('(max-width: 768px)').matches
+                          || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+            let W = 0, H = 0;
+            let particles = [];
+            const MAX_PARTICLES = isMobile ? 90 : 200;
+            const TARGET_FPS = isMobile ? 30 : 60;
+            const FRAME_INTERVAL = 1000 / TARGET_FPS;
+            
+            function resize() {
+                W = window.innerWidth;
+                H = window.innerHeight;
+                canvas.width = Math.floor(W * dpr);
+                canvas.height = Math.floor(H * dpr);
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+            resize();
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resize, 150);
+            });
+
+            function createParticle() {
+                if (particles.length >= MAX_PARTICLES) return;
+                
+                // Api muncul dari bawah (dengan sedikit jarak acak)
+                const x = Math.random() * W;
+                const y = H + (Math.random() * 50);
+                
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 2, // Goyang kiri-kanan
+                    vy: -(2 + Math.random() * 5),  // Kecepatan naik
+                    life: 1,
+                    decay: 0.004 + Math.random() * 0.008,
+                    size: 40 + Math.random() * 80, // Ukuran besar agar menyatu
+                    isPurple: Math.random() > 0.5
+                });
+            }
+
+            let lastFrameTime = 0;
+            
+            function animate(time) {
+                requestAnimationFrame(animate);
+                
+                const elapsed = time - lastFrameTime;
+                if (elapsed < FRAME_INTERVAL) return;
+                lastFrameTime = time - (elapsed % FRAME_INTERVAL);
+
+                // Clear canvas dengan warna dasar gelap
+                ctx.clearRect(0, 0, W, H);
+
+                // Additive blending untuk efek cahaya api
+                ctx.globalCompositeOperation = 'lighter';
+
+                // Spawn partikel baru
+                const spawnCount = isMobile ? 2 : 5;
+                for (let i = 0; i < spawnCount; i++) {
+                    createParticle();
+                }
+
+                const nextParticles = [];
+                
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life -= p.decay;
+                    
+                    // Api makin ke atas makin cepat
+                    p.vy -= 0.05;
+                    // Gesekan angin
+                    p.vx *= 0.99;
+
+                    if (p.life <= 0) continue;
+
+                    const alpha = p.life;
+                    const currentSize = p.size * (1 + p.life * 0.5); // Membesar dikit saat naik
+                    
+                    let r, g, b;
+                    if (p.isPurple) {
+                        // Warna Ungu: #d900ff
+                        r = Math.floor(217 * alpha);
+                        g = 0;
+                        b = 255;
+                    } else {
+                        // Warna Biru: #00d2ff
+                        r = 0;
+                        g = Math.floor(210 * alpha);
+                        b = 255;
+                    }
+
+                    // Gambar glow luar
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.3})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Gambar inti api
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.7})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, currentSize * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Titik putih terang di tengah (bara api)
+                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.6})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, currentSize * 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    nextParticles.push(p);
+                }
+                
+                particles = nextParticles;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            requestAnimationFrame(animate);
+
+            // Pause animasi saat tab tidak aktif (hemat baterai)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    // Jika pindah tab, kita bersihkan partikel lama agar tidak menumpuk
+                    particles = [];
+                }
+            });
+        })();
     </script>
 
 </body>
-    </html>
+</html>
