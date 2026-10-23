@@ -47,6 +47,7 @@
         html, body { margin: 0; padding: 0; height: 100%; }
         body { overflow-x: hidden; background-color: #080a11; }
 
+        /* ==== VIDEO BACKGROUND ==== */
         #bg-video {
             position: fixed; inset: 0; width: 100%; height: 100%;
             object-fit: cover; object-position: center;
@@ -58,6 +59,7 @@
             will-change: transform;
         }
 
+        /* Overlay gelap agar teks tetap terbaca */
         #bg-overlay {
             position: fixed; inset: 0; z-index: 1; pointer-events: none;
             background: radial-gradient(
@@ -117,6 +119,7 @@
             z-index: 2;
         }
 
+        /* Efek cahaya blur di background (bukan partikel berterbangan) */
         .blob-blue {
             position: absolute; width: 350px; height: 350px;
             background: radial-gradient(circle, rgba(0, 210, 255, 0.15) 0%, transparent 70%);
@@ -181,6 +184,7 @@
 
     <div id="bg-overlay"></div>
 
+    <!-- Efek Blur Cahaya (Statis) -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-[2]">
         <div class="blob-blue top-[-10%] left-[-10%] animate-pulse-glow"></div>
         <div class="blob-purple top-[30%] right-[-10%] animate-pulse-glow" style="animation-delay: 1.5s;"></div>
