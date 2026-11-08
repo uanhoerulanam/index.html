@@ -2,305 +2,429 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080d18">
-  <meta name="description" content="Saluran resmi AnkraiXMotion. Temukan WhatsApp dan Telegram kami.">
-  <title>AnkraiXMotion | Official Channels</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b18">
+<meta name="description" content="Official Channels AnkraiXMotion">
+<title>AnkraiXMotion | Official Links</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #080d18;
-      color: #f1f5f9;
-      min-height: 100vh;
-      padding: 25px 16px;
-    }
+:root {
+  --bg: #080b18;
+  --card: rgba(20, 27, 49, .85);
+  --text: #f8faff;
+  --muted: #9ba8c2;
+  --cyan: #00d2ff;
+  --purple: #a855f7;
+}
 
-    .container {
-      width: 100%;
-      max-width: 440px;
-      margin: 0 auto;
-    }
+body {
+  min-height: 100vh;
+  padding: 35px 18px;
+  background:
+    radial-gradient(ellipse at 10% 5%, rgba(0,210,255,.18), transparent 35%),
+    radial-gradient(ellipse at 90% 35%, rgba(168,85,247,.19), transparent 35%),
+    radial-gradient(ellipse at 50% 100%, rgba(0,100,255,.12), transparent 40%),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, Arial, sans-serif;
+}
 
-    header {
-      text-align: center;
-      padding: 35px 10px 30px;
-    }
+.container {
+  max-width: 440px;
+  width: 100%;
+  margin: auto;
+}
 
-    .logo {
-      width: 65px;
-      height: 65px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 18px;
-      border-radius: 20px;
-      background: #12243a;
-      border: 1px solid #1d4961;
-      color: #00d2ff;
-      font-size: 23px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
+header {
+  text-align: center;
+  padding: 25px 10px 30px;
+}
 
-    h1 {
-      font-size: 23px;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-    }
+.logo-wrap {
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 22px;
+  padding: 4px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #00d2ff, #a855f7, #ff4eb8);
+  box-shadow: 0 0 35px rgba(0,210,255,.2);
+}
 
-    .subtitle {
-      color: #94a3b8;
-      font-size: 14px;
-      line-height: 1.6;
-    }
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 24px;
+  background: #10172a;
+}
 
-    .section-title {
-      font-size: 15px;
-      margin: 10px 0 15px;
-      color: #cbd5e1;
-    }
+h1 {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  background: linear-gradient(90deg, #00d2ff, #b58aff, #ff76c8);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
 
-    .channel {
-      background: #111c2c;
-      border: 1px solid #1e3046;
-      border-radius: 14px;
-      padding: 17px;
-      margin-bottom: 13px;
-    }
+.subtitle {
+  max-width: 310px;
+  margin: 12px auto 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
 
-    .channel-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 17px;
-    }
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 18px;
+  padding: 7px 13px;
+  border: 1px solid rgba(0,255,160,.2);
+  background: rgba(0,255,160,.07);
+  color: #64f0b0;
+  border-radius: 30px;
+  font-size: 11px;
+}
 
-    .icon {
-      width: 43px;
-      height: 43px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 12px;
-      font-size: 22px;
-      background: #172b35;
-    }
+.status span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #35e89a;
+}
 
-    .whatsapp .icon {
-      color: #25d366;
-    }
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 16px;
+  font-size: 15px;
+  font-weight: 700;
+}
 
-    .telegram .icon {
-      color: #29a9eb;
-      background: #142b40;
-    }
+.section-heading::before {
+  content: "";
+  width: 4px;
+  height: 19px;
+  border-radius: 5px;
+  background: linear-gradient(#00d2ff, #a855f7);
+}
 
-    .channel-name {
-      font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
+.channel {
+  position: relative;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid rgba(150,170,220,.13);
+  border-radius: 17px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.15);
+}
 
-    .channel-type {
-      color: #8495aa;
-      font-size: 12px;
-    }
+.channel::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  right: -55px;
+  top: -55px;
+  border-radius: 50%;
+  background: var(--glow);
+  filter: blur(35px);
+  pointer-events: none;
+}
 
-    .actions {
-      display: flex;
-      gap: 9px;
-    }
+.whatsapp {
+  --glow: rgba(37,211,102,.35);
+}
 
-    .btn {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 7px;
-      padding: 11px 8px;
-      border-radius: 9px;
-      font-size: 13px;
-      font-weight: bold;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      color: white;
-    }
+.telegram {
+  --glow: rgba(41,169,235,.4);
+}
 
-    .open {
-      background: #126b46;
-    }
+.channel-info {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 18px;
+}
 
-    .copy {
-      background: #24364b;
-    }
+.channel-icon {
+  width: 47px;
+  height: 47px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  font-size: 24px;
+  flex-shrink: 0;
+}
 
-    .btn:active {
-      opacity: 0.75;
-    }
+.whatsapp .channel-icon {
+  color: #39e98c;
+  background: rgba(37,211,102,.12);
+  border: 1px solid rgba(37,211,102,.18);
+}
 
-    footer {
-      text-align: center;
-      padding: 30px 10px 15px;
-      color: #64748b;
-      font-size: 11px;
-      line-height: 1.8;
-    }
+.telegram .channel-icon {
+  color: #42bafa;
+  background: rgba(41,169,235,.13);
+  border: 1px solid rgba(41,169,235,.2);
+}
 
-    #toast {
-      position: fixed;
-      bottom: 25px;
-      left: 50%;
-      transform: translateX(-50%) translateY(15px);
-      background: #172b35;
-      border: 1px solid #285b4a;
-      color: #b8f5d2;
-      padding: 12px 20px;
-      border-radius: 10px;
-      font-size: 13px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s, transform .2s;
-      white-space: nowrap;
-    }
+.channel-name {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
 
-    #toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-  </style>
+.channel-desc {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex: 1;
+  padding: 12px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.btn:active {
+  transform: scale(.97);
+}
+
+.open-wa {
+  color: #071c12;
+  background: linear-gradient(135deg,#37e68c,#19c96c);
+}
+
+.open-tg {
+  color: #061b2b;
+  background: linear-gradient(135deg,#54c9ff,#229de5);
+}
+
+.copy {
+  color: #e7eaff;
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.1);
+}
+
+footer {
+  margin-top: 30px;
+  text-align: center;
+  color: #77849e;
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+footer strong {
+  color: #a9b6d2;
+  letter-spacing: 1px;
+}
+
+#toast {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translate(-50%, 20px);
+  opacity: 0;
+  pointer-events: none;
+  background: #172d34;
+  color: #75f2b2;
+  border: 1px solid rgba(70,240,170,.3);
+  padding: 12px 19px;
+  border-radius: 12px;
+  font-size: 13px;
+  transition: .2s;
+  z-index: 10;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (max-width: 360px) {
+  body { padding: 22px 12px; }
+  h1 { font-size: 21px; }
+  .channel { padding: 14px; }
+  .btn { font-size: 11px; }
+}
+</style>
 </head>
 
 <body>
-  <main class="container">
 
-    <header>
-      <div class="logo">AX</div>
-      <h1>ANKRAIX MOTION</h1>
-      <p class="subtitle">
-        Selamat datang di halaman resmi AnkraiXMotion.
-        Temukan dan ikuti semua saluran kami di sini.
-      </p>
-    </header>
+<main class="container">
 
-    <h2 class="section-title">Saluran Resmi</h2>
+<header>
+  <div class="logo-wrap">
+    <img
+      class="logo"
+      src="ToastAndroForever.png"
+      alt="AnkraiXMotion Logo"
+    >
+  </div>
 
-    <section class="channel whatsapp">
-      <div class="channel-info">
-        <div class="icon">◉</div>
-        <div>
-          <div class="channel-name">WhatsApp Channel 1</div>
-          <div class="channel-type">Saluran WhatsApp resmi</div>
-        </div>
-      </div>
+  <h1>ANKRAIX MOTION</h1>
 
-      <div class="actions">
-        <a class="btn open"
-           href="https://whatsapp.com/channel/0029VbC1J5S8kyyMKhJ1Na2w"
-           target="_blank" rel="noopener noreferrer">
-          ↗ Buka
-        </a>
-        <button class="btn copy"
-          onclick="copyLink('https://whatsapp.com/channel/0029VbC1J5S8kyyMKhJ1Na2w')">
-          ▢ Salin Link
-        </button>
-      </div>
-    </section>
+  <p class="subtitle">
+    Selamat datang di halaman resmi AnkraiXMotion.
+    Temukan semua saluran dan dapatkan informasi terbaru di sini.
+  </p>
 
-    <section class="channel whatsapp">
-      <div class="channel-info">
-        <div class="icon">◉</div>
-        <div>
-          <div class="channel-name">WhatsApp Channel 2</div>
-          <div class="channel-type">Saluran WhatsApp resmi</div>
-        </div>
-      </div>
+  <div class="status">
+    <span></span>
+    OFFICIAL CHANNELS
+  </div>
+</header>
 
-      <div class="actions">
-        <a class="btn open"
-           href="https://whatsapp.com/channel/0029VbDwDua7YScwWS67qa2H"
-           target="_blank" rel="noopener noreferrer">
-          ↗ Buka
-        </a>
-        <button class="btn copy"
-          onclick="copyLink('https://whatsapp.com/channel/0029VbDwDua7YScwWS67qa2H')">
-          ▢ Salin Link
-        </button>
-      </div>
-    </section>
+<h2 class="section-heading">Saluran Resmi</h2>
 
-    <section class="channel telegram">
-      <div class="channel-info">
-        <div class="icon">➤</div>
-        <div>
-          <div class="channel-name">Telegram Channel</div>
-          <div class="channel-type">Saluran Telegram resmi</div>
-        </div>
-      </div>
+<!-- WHATSAPP CHANNEL 1 -->
+<section class="channel whatsapp">
+  <div class="channel-info">
+    <div class="channel-icon">◉</div>
+    <div>
+      <div class="channel-name">WhatsApp Channel 1</div>
+      <div class="channel-desc">Ikuti update terbaru kami</div>
+    </div>
+  </div>
 
-      <div class="actions">
-        <a class="btn open"
-           href="https://t.me/ankraixmotion"
-           target="_blank" rel="noopener noreferrer">
-          ↗ Buka
-        </a>
-        <button class="btn copy"
-          onclick="copyLink('https://t.me/ankraixmotion')">
-          ▢ Salin Link
-        </button>
-      </div>
-    </section>
+  <div class="actions">
+    <a class="btn open-wa"
+       href="https://whatsapp.com/channel/0029VbC1J5S8kyyMKhJ1Na2w"
+       target="_blank" rel="noopener noreferrer">
+      ↗ Buka Saluran
+    </a>
 
-    <footer>
-      ANKRAIX MOTION © 2026<br>
-      Official Channels
-    </footer>
+    <button class="btn copy"
+      onclick="copyLink('https://whatsapp.com/channel/0029VbC1J5S8kyyMKhJ1Na2w')">
+      ▢ Salin Link
+    </button>
+  </div>
+</section>
 
-  </main>
+<!-- WHATSAPP CHANNEL 2 -->
+<section class="channel whatsapp">
+  <div class="channel-info">
+    <div class="channel-icon">◉</div>
+    <div>
+      <div class="channel-name">WhatsApp Channel 2</div>
+      <div class="channel-desc">Informasi dan konten terbaru</div>
+    </div>
+  </div>
 
-  <div id="toast">✓ Link berhasil disalin!</div>
+  <div class="actions">
+    <a class="btn open-wa"
+       href="https://whatsapp.com/channel/0029VbDwDua7YScwWS67qa2H"
+       target="_blank" rel="noopener noreferrer">
+      ↗ Buka Saluran
+    </a>
 
-  <script>
-    let toastTimer;
+    <button class="btn copy"
+      onclick="copyLink('https://whatsapp.com/channel/0029VbDwDua7YScwWS67qa2H')">
+      ▢ Salin Link
+    </button>
+  </div>
+</section>
 
-    async function copyLink(link) {
-      try {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(link);
-        } else {
-          const input = document.createElement("textarea");
-          input.value = link;
-          input.style.position = "fixed";
-          input.style.opacity = "0";
-          document.body.appendChild(input);
-          input.select();
+<!-- TELEGRAM CHANNEL -->
+<section class="channel telegram">
+  <div class="channel-info">
+    <div class="channel-icon">➤</div>
+    <div>
+      <div class="channel-name">Telegram Channel</div>
+      <div class="channel-desc">Bergabung dengan komunitas kami</div>
+    </div>
+  </div>
 
-          const success = document.execCommand("copy");
-          input.remove();
+  <div class="actions">
+    <a class="btn open-tg"
+       href="https://t.me/ankraixmotion"
+       target="_blank" rel="noopener noreferrer">
+      ↗ Buka Telegram
+    </a>
 
-          if (!success) throw new Error("Copy gagal");
-        }
+    <button class="btn copy"
+      onclick="copyLink('https://t.me/ankraixmotion')">
+      ▢ Salin Link
+    </button>
+  </div>
+</section>
 
-        const toast = document.getElementById("toast");
-        toast.classList.add("show");
+<footer>
+  <strong>ANKRAIX MOTION</strong><br>
+  Official Links © 2026
+</footer>
 
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-          toast.classList.remove("show");
-        }, 2000);
+</main>
 
-      } catch (error) {
-        alert("Gagal menyalin link. Silakan coba lagi.");
-      }
+<div id="toast">✓ Link berhasil disalin!</div>
+
+<script>
+let toastTimer;
+
+async function copyLink(link) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(link);
+    } else {
+      const input = document.createElement("textarea");
+      input.value = link;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+
+      const success = document.execCommand("copy");
+      input.remove();
+
+      if (!success) throw new Error("Copy gagal");
     }
-  </script>
+
+    const toast = document.getElementById("toast");
+    toast.textContent = "✓ Link berhasil disalin!";
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2000);
+
+  } catch (error) {
+    alert("Gagal menyalin link. Silakan coba lagi.");
+  }
+}
+</script>
+
 </body>
 </html>
